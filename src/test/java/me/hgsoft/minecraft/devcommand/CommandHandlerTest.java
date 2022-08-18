@@ -1,6 +1,7 @@
 package me.hgsoft.minecraft.devcommand;
 
 import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
+import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
@@ -22,8 +23,8 @@ class CommandHandlerTest {
     void setUp() {
         commandHandler = CommandHandler.createOrGetInstance();
         commandRegistry = CommandRegistry.getInstance();
-        integrationStub = new Integration("myIntegration", null);
-        bukkitCommandStub = new BukkitCommand("test", "Bukkit Test Command!", "", null, BukkitTestCommand.class);
+        integrationStub = new Integration("myIntegration", "me.hgsoft.");
+        bukkitCommandStub = new BukkitCommand("test", "Bukkit Test Command!", null, new Class[] {Integer.class}, BukkitTestCommand.class);
     }
 
     @AfterEach
@@ -47,8 +48,7 @@ class CommandHandlerTest {
     @Test
     void executeCommandByAlias_CommandNotRegistered() {
 
-        Object[] commandArgs = new Object[1];
-        boolean commandSuccessfullyExecuted = commandHandler.executeCommandByAlias(integrationStub, bukkitCommandStub.getAlias(), commandArgs);
+        boolean commandSuccessfullyExecuted = commandHandler.executeCommandByAlias(integrationStub, bukkitCommandStub.getAlias(), null, "1");
 
         assertFalse(commandSuccessfullyExecuted);
         assertFalse(BukkitTestCommand.called);
@@ -58,13 +58,30 @@ class CommandHandlerTest {
     @Test
     void executeCommandByAliasForBukkitCommand() {
 
-        Object[] commandArgs = new Object[] {null, new String[] {"boa", "tarde"}};
-
         commandHandler.registerCommand(integrationStub, bukkitCommandStub);
-        boolean commandSuccessfullyExecuted = commandHandler.executeCommandByAlias(integrationStub, bukkitCommandStub.getAlias(), commandArgs);
+        boolean commandSuccessfullyExecuted = commandHandler.executeCommandByAlias(integrationStub, bukkitCommandStub.getAlias(), null, "good", "afternoon");
 
         assertTrue(commandSuccessfullyExecuted);
         assertTrue(BukkitTestCommand.called);
+
+    }
+
+    @Test
+    void initCommandsAutoConfiguration() {
+
+        commandHandler.initCommandsAutoConfiguration(integrationStub);
+
+        assertNotNull(commandRegistry.getValues(integrationStub));
+        assertEquals(1, commandRegistry.getValues(integrationStub).size());
+        assertEquals(bukkitCommandStub, commandRegistry.getValues(integrationStub).get(0));
+
+    }
+
+    @Test
+    void initCommandsAutoConfigurationWithInvalidIntegration() {
+
+        Integration invalidIntegration = new Integration("MyPlugin", null);
+        assertThrows(InvalidIntegrationException.class, () -> commandHandler.initCommandsAutoConfiguration(invalidIntegration));
 
     }
 

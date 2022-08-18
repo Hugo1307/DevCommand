@@ -3,6 +3,7 @@ package me.hgsoft.minecraft.devcommand;
 import lombok.extern.log4j.Log4j2;
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
+import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
 import me.hgsoft.minecraft.devcommand.factory.CommandFactory;
 import me.hgsoft.minecraft.devcommand.factory.CommandFactoryImpl;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
@@ -21,7 +22,7 @@ public class CommandHandler {
         CommandRegistry.getInstance().add(integration, command);
     }
 
-    public boolean executeCommandByAlias(Integration integration, String alias, Object[] commandArgs) {
+    public boolean executeCommandByAlias(Integration integration, String alias, Object... commandArgs) {
 
         CommandFactory commandFactory = new CommandFactoryImpl(commandArgs);
         CommandRegistry commandRegistry = CommandRegistry.getInstance();
@@ -44,7 +45,11 @@ public class CommandHandler {
 
     }
 
-    public void initCommandsAutoLookup(Integration integration) {
+    public void initCommandsAutoConfiguration(Integration integration) {
+
+        if (!checkIntegrationValidity(integration)) {
+            throw new InvalidIntegrationException(String.format("The integration %s contained an invalid base package.", integration.getName()));
+        }
 
         CommandDiscoveryService commandDiscoveryService = new CommandDiscoveryService(integration);
 
@@ -56,6 +61,14 @@ public class CommandHandler {
                     log.info(String.format("Loaded command '%s' from '%s'.", commandExecutor.getAlias(), integration.getName()));
                 });
 
+    }
+
+    private boolean checkIntegrationValidity(Integration integration) {
+        if (integration == null || integration.getBasePackage() == null) {
+            log.warn("Unable to find base package for Integration - Commands Auto-Configuration stopped.");
+            return false;
+        }
+        return true;
     }
 
     public static CommandHandler createOrGetInstance() {

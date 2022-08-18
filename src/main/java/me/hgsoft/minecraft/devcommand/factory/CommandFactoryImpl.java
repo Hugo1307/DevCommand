@@ -36,8 +36,8 @@ public class CommandFactoryImpl implements CommandFactory {
             Constructor<? extends ICommandExecutor> executorConstructor;
 
             if (abstractCommand instanceof BukkitCommand) {
-                executorConstructor = executor.getConstructor(CommandSender.class, String[].class);
-                executorInstance = executorConstructor.newInstance((CommandSender) executorArgs[0], (String[]) Arrays.copyOfRange(executorArgs, 1, executorArgs.length)[0]);
+                executorConstructor = executor.getConstructor(AbstractCommand.class, CommandSender.class, String[].class);
+                executorInstance = executorConstructor.newInstance(abstractCommand, executorArgs[0], Arrays.copyOfRange(executorArgs, 1, executorArgs.length, String[].class));
             } else {
                 executorInstance = null;
             }

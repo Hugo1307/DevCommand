@@ -17,7 +17,7 @@ class CommandFactoryImplTest {
 
     @BeforeEach
     void setUp() {
-        bukkitCommandFactory = new CommandFactoryImpl(null, new String[] {"boa", "tarde"});
+        bukkitCommandFactory = new CommandFactoryImpl(null, "boa", "tarde");
         bukkitCommand = new BukkitCommand("testBukkit", "Test Bukkit Command", "", null, BukkitTestCommand.class);
     }
 
