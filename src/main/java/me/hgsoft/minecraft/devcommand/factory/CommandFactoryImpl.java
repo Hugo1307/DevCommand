@@ -1,6 +1,5 @@
 package me.hgsoft.minecraft.devcommand.factory;
 
-import lombok.RequiredArgsConstructor;
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
 import me.hgsoft.minecraft.devcommand.commands.Command;
@@ -18,10 +17,13 @@ import java.util.Arrays;
  * @author Hugo1307
  */
 
-@RequiredArgsConstructor
 public class CommandFactoryImpl implements CommandFactory {
 
     private final Object[] executorArgs;
+
+    public CommandFactoryImpl(Object... executorArgs) {
+        this.executorArgs = executorArgs;
+    }
 
     @Override
     public ICommandExecutor generateExecutor(AbstractCommand abstractCommand) {
@@ -38,7 +40,7 @@ public class CommandFactoryImpl implements CommandFactory {
                 executorInstance = executorConstructor.newInstance(executorArgs);
             } else if (abstractCommand instanceof BukkitCommand) {
                 executorConstructor = executor.getConstructor(CommandSender.class, String[].class);
-                executorInstance = executorConstructor.newInstance((CommandSender) executorArgs[0], (String[]) Arrays.copyOfRange(executorArgs, 1, executorArgs.length));
+                executorInstance = executorConstructor.newInstance((CommandSender) executorArgs[0], (String[]) Arrays.copyOfRange(executorArgs, 1, executorArgs.length)[0]);
             } else {
                 executorInstance = null;
             }
