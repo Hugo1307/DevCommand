@@ -1,6 +1,8 @@
 package me.hgsoft.minecraft.devcommand;
 
+import lombok.extern.log4j.Log4j2;
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
+import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
 import me.hgsoft.minecraft.devcommand.factory.CommandFactory;
 import me.hgsoft.minecraft.devcommand.factory.CommandFactoryImpl;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
@@ -8,6 +10,7 @@ import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 
 import java.util.*;
 
+@Log4j2
 public class CommandHandler {
 
     private static CommandHandler currentInstance;
@@ -41,14 +44,25 @@ public class CommandHandler {
 
     }
 
-    public static CommandHandler createOrGetInstance() {
+    public void initCommandsAutoLookup(Integration integration) {
 
+        CommandDiscoveryService commandDiscoveryService = new CommandDiscoveryService(integration);
+
+        commandDiscoveryService.getCommandExecutorClasses()
+                .stream()
+                .map(commandDiscoveryService::executorClassToCommand)
+                .forEach(commandExecutor -> {
+                    CommandRegistry.getInstance().add(integration, commandExecutor);
+                    log.info(String.format("Loaded command '%s' from '%s'.", commandExecutor.getAlias(), integration.getName()));
+                });
+
+    }
+
+    public static CommandHandler createOrGetInstance() {
         if (currentInstance == null) {
             currentInstance = new CommandHandler();
         }
-
         return currentInstance;
-
     }
 
 }

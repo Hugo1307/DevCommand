@@ -1,13 +1,10 @@
 package me.hgsoft.minecraft.devcommand;
 
 import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
-import me.hgsoft.minecraft.devcommand.commands.BaseCommand;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
-import me.hgsoft.minecraft.devcommand.commands.builder.BaseCommandBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
-import me.hgsoft.minecraft.devcommand.utils.TestBaseCommand;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,34 +20,18 @@ class MainTest {
     static void initialSetUp() {
         commandHandler = CommandHandler.createOrGetInstance();
         commandRegistry = CommandRegistry.getInstance();
-        pluginIntegration = new Integration("myPlugin");
+        pluginIntegration = new Integration("myPlugin", "me.hgsoft.minecraft.devcommand");
     }
 
     @BeforeEach
     void setUp() {
-        TestBaseCommand.called = false;
         BukkitTestCommand.called = false;
     }
 
     @AfterEach
     void tearDown() {
-        TestBaseCommand.called = false;
         BukkitTestCommand.called = false;
         commandRegistry.setValues(pluginIntegration, null);
-    }
-
-    @Test
-    void registerAndExecuteRegularCommand() {
-
-        BaseCommand baseCommand = new BaseCommandBuilder("help", TestBaseCommand.class)
-                .withDescription("Some Description")
-                .build();
-
-        commandHandler.registerCommand(pluginIntegration, baseCommand);
-        commandHandler.executeCommandByAlias(pluginIntegration, "help", new Object[1]);
-
-        Assertions.assertTrue(TestBaseCommand.called);
-
     }
 
     @Test
@@ -66,6 +47,11 @@ class MainTest {
 
         Assertions.assertTrue(BukkitTestCommand.called);
 
+    }
+
+    @Test
+    void testAutoConfiguration() {
+        commandHandler.initCommandsAutoLookup(pluginIntegration);
     }
 
 }

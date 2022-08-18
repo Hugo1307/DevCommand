@@ -6,8 +6,8 @@ import lombok.ToString;
 import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 
 @Getter
-@ToString
-@EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class BukkitCommand extends AbstractCommand {
 
     private final String permission;
