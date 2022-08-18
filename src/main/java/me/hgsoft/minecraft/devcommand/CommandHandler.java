@@ -1,6 +1,6 @@
 package me.hgsoft.minecraft.devcommand;
 
-import me.hgsoft.minecraft.devcommand.commands.Command;
+import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.factory.CommandFactory;
 import me.hgsoft.minecraft.devcommand.factory.CommandFactoryImpl;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
@@ -14,7 +14,7 @@ public class CommandHandler {
 
     private CommandHandler() { }
 
-    public void registerCommand(Integration integration, Command command) {
+    public void registerCommand(Integration integration, AbstractCommand command) {
         CommandRegistry.getInstance().add(integration, command);
     }
 
@@ -22,13 +22,13 @@ public class CommandHandler {
 
         CommandFactory commandFactory = new CommandFactoryImpl(commandArgs);
         CommandRegistry commandRegistry = CommandRegistry.getInstance();
-        List<Command> registeredCommandsForIntegration = commandRegistry.getValues(integration);
+        List<AbstractCommand> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 
         if (registeredCommandsForIntegration == null) {
             return false;
         }
 
-        for (Command registeredCommand : registeredCommandsForIntegration) {
+        for (AbstractCommand registeredCommand : registeredCommandsForIntegration) {
 
             if (registeredCommand.getAlias().equalsIgnoreCase(alias)) {
                 commandFactory.generateExecutor(registeredCommand).execute();

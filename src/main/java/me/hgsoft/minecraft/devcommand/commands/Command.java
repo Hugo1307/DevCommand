@@ -1,13 +1,14 @@
 package me.hgsoft.minecraft.devcommand.commands;
 
-import lombok.Data;
+import lombok.*;
 import me.hgsoft.minecraft.devcommand.executors.CommandExecutor;
 
-@Data
-public class Command {
+@ToString
+@EqualsAndHashCode(callSuper = false)
+public class Command extends AbstractCommand {
 
-    private final String alias;
-    private final String description;
-    private final Class<? extends CommandExecutor> executor;
+    public Command(String alias, String description, Class<? extends CommandExecutor> executor) {
+        super(alias, description, executor);
+    }
 
 }

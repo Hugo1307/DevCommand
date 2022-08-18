@@ -1,12 +1,14 @@
 package me.hgsoft.minecraft.devcommand.factory;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
+import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
 import me.hgsoft.minecraft.devcommand.commands.Command;
-import me.hgsoft.minecraft.devcommand.executors.CommandExecutor;
+import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 
 /**
  * Command Factory
@@ -22,14 +24,25 @@ public class CommandFactoryImpl implements CommandFactory {
     private final Object[] executorArgs;
 
     @Override
-    public CommandExecutor generateExecutor(Command command) {
+    public ICommandExecutor generateExecutor(AbstractCommand abstractCommand) {
 
-        Class<? extends CommandExecutor> executor = command.getExecutor();
-        CommandExecutor executorInstance;
+        Class<? extends ICommandExecutor> executor = abstractCommand.getExecutor();
+        ICommandExecutor executorInstance;
 
         try {
-            Constructor<? extends CommandExecutor> executorConstructor = executor.getConstructor(Object[].class);
-            executorInstance = executorConstructor.newInstance(executorArgs);
+
+            Constructor<? extends ICommandExecutor> executorConstructor;
+
+            if (abstractCommand instanceof Command) {
+                executorConstructor = executor.getConstructor(Object[].class);
+                executorInstance = executorConstructor.newInstance(executorArgs);
+            } else if (abstractCommand instanceof BukkitCommand) {
+                executorConstructor = executor.getConstructor(CommandSender.class, String[].class);
+                executorInstance = executorConstructor.newInstance((CommandSender) executorArgs[0], (String[]) Arrays.copyOfRange(executorArgs, 1, executorArgs.length));
+            } else {
+                executorInstance = null;
+            }
+
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
             return null;

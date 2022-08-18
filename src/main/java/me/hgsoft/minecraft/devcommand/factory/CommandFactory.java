@@ -1,9 +1,9 @@
 package me.hgsoft.minecraft.devcommand.factory;
 
 
-import me.hgsoft.minecraft.devcommand.commands.Command;
-import me.hgsoft.minecraft.devcommand.executors.CommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
+import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 
 public interface CommandFactory {
-    CommandExecutor generateExecutor(Command command);
+    ICommandExecutor generateExecutor(AbstractCommand command);
 }

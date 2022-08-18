@@ -2,6 +2,7 @@ package me.hgsoft.minecraft.devcommand.factory;
 
 import me.hgsoft.minecraft.devcommand.commands.Command;
 import me.hgsoft.minecraft.devcommand.executors.CommandExecutor;
+import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 import me.hgsoft.minecraft.devcommand.utils.TestCommand;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class CommandFactoryImplTest {
 
     @Test
     void generateExecutor() {
-        CommandExecutor generatedCommandExecutor = commandFactory.generateExecutor(command);
+        ICommandExecutor generatedCommandExecutor = commandFactory.generateExecutor(command);
         Assertions.assertTrue(generatedCommandExecutor instanceof TestCommand);
     }
 
