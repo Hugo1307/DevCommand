@@ -1,12 +1,12 @@
 package me.hgsoft.minecraft.devcommand.utils;
 
-import me.hgsoft.minecraft.devcommand.executors.CommandExecutor;
+import me.hgsoft.minecraft.devcommand.executors.BaseCommandExecutor;
 
-public class TestCommand extends CommandExecutor {
+public class TestBaseCommand extends BaseCommandExecutor {
 
     public static boolean called;
 
-    public TestCommand(Object[] args) {
+    public TestBaseCommand(Object[] args) {
         super(args);
     }
 

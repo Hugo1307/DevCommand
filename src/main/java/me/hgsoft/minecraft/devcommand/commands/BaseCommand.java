@@ -5,9 +5,9 @@ import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class Command extends AbstractCommand {
+public class BaseCommand extends AbstractCommand {
 
-    public Command(String alias, String description, Class<? extends ICommandExecutor> executor) {
+    public BaseCommand(String alias, String description, Class<? extends ICommandExecutor> executor) {
         super(alias, description, executor);
     }
 

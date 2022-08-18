@@ -2,7 +2,7 @@ package me.hgsoft.minecraft.devcommand.factory;
 
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
-import me.hgsoft.minecraft.devcommand.commands.Command;
+import me.hgsoft.minecraft.devcommand.commands.BaseCommand;
 import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 import org.bukkit.command.CommandSender;
 
@@ -35,7 +35,7 @@ public class CommandFactoryImpl implements CommandFactory {
 
             Constructor<? extends ICommandExecutor> executorConstructor;
 
-            if (abstractCommand instanceof Command) {
+            if (abstractCommand instanceof BaseCommand) {
                 executorConstructor = executor.getConstructor(Object[].class);
                 executorInstance = executorConstructor.newInstance(executorArgs);
             } else if (abstractCommand instanceof BukkitCommand) {
