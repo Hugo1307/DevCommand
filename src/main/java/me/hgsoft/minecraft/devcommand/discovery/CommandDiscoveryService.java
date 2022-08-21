@@ -7,6 +7,7 @@ import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
 import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
+import me.hgsoft.minecraft.devcommand.factories.validators.CommandArgument;
 import org.reflections.Reflections;
 
 import java.util.Set;
@@ -34,7 +35,7 @@ public class CommandDiscoveryService {
 
     public AbstractCommand executorClassToCommand(Class<? extends ICommandExecutor> commandExecutorClass) {
 
-        Class<?>[] argsValidationTypes = null;
+        Class<? extends CommandArgument<?>>[] argsValidationTypes = null;
 
         if (containsArgsValidator(commandExecutorClass)) {
             ArgsValidation executorArgsValidationAnnotation = getArgsValidationAnnotation(commandExecutorClass);
@@ -50,7 +51,7 @@ public class CommandDiscoveryService {
         return new BukkitCommandBuilder(commandAlias, commandExecutorClass)
                 .withDescription(commandDescription)
                 .withPermission(commandPermission)
-                .withArgumentTypes(argsValidationTypes)
+                .withMandatoryArguments(argsValidationTypes)
                 .build();
 
     }

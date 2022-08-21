@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.utils;
+package me.hgsoft.minecraft.devcommand.utils.arguments;
 
 import me.hgsoft.minecraft.devcommand.annotations.ArgsValidation;
 import me.hgsoft.minecraft.devcommand.annotations.Command;
@@ -7,26 +7,24 @@ import me.hgsoft.minecraft.devcommand.executors.BukkitCommandExecutor;
 import me.hgsoft.minecraft.devcommand.factories.validators.IntegerArgument;
 import org.bukkit.command.CommandSender;
 
-@Command(alias = "test", description = "Bukkit Test Command!", permission = "command.bukkit_test")
+@Command(alias = "test_arg", description = "Argument Test Command!", permission = "command.bukkit_test")
 @ArgsValidation(argsTypes = {IntegerArgument.class})
-public class BukkitTestCommand extends BukkitCommandExecutor {
+public class ArgumentTestCommand extends BukkitCommandExecutor {
 
     public static boolean called;
-    public static BukkitCommand command;
-    public static CommandSender sender;
-    public static String[] args;
+    public static boolean hasPermission;
+    public static boolean hasValidArgs;
 
-    public BukkitTestCommand(BukkitCommand command, CommandSender commandSender, String[] args) {
+    public ArgumentTestCommand(BukkitCommand command, CommandSender commandSender, String[] args) {
         super(command, commandSender, args);
     }
 
     @Override
     public void execute() {
-        System.out.println("Bukkit Test Command executed!");
+        System.out.println("Argument Test Command Executed!");
         called = true;
-        command = getCommand();
-        sender = getCommandSender();
-        args = getArgs();
+        hasPermission = hasPermissionToExecuteCommand();
+        hasValidArgs = hasValidArgs();
     }
 
 }

@@ -2,18 +2,27 @@ package me.hgsoft.minecraft.devcommand.commands.builder;
 
 import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
 import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.factories.validators.CommandArgument;
 
 public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilder, BukkitCommand> {
 
+    private String name;
     private String alias;
     private String description;
     private String permission;
-    private Class<?>[] argumentTypes;
+    private Class<? extends CommandArgument<?>>[] mandatoryArguments;
+    private Class<? extends CommandArgument<?>>[] optionalArguments;
     private Class<? extends ICommandExecutor> executor;
 
     public BukkitCommandBuilder(String alias, Class<? extends ICommandExecutor> executor) {
         this.alias = alias;
         this.executor = executor;
+    }
+
+    @Override
+    public BukkitCommandBuilder withName(String name) {
+        this.name = name;
+        return this;
     }
 
     @Override
@@ -39,13 +48,20 @@ public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilde
         return this;
     }
 
-    public BukkitCommandBuilder withArgumentTypes(Class<?>[] argumentTypes) {
-        this.argumentTypes = argumentTypes;
+    @SafeVarargs
+    public final BukkitCommandBuilder withMandatoryArguments(Class<? extends CommandArgument<?>>... argumentTypes) {
+        this.mandatoryArguments = argumentTypes;
+        return this;
+    }
+
+    @SafeVarargs
+    public final BukkitCommandBuilder withOptionalArguments(Class<? extends CommandArgument<?>>... argumentTypes) {
+        this.optionalArguments = argumentTypes;
         return this;
     }
 
     public BukkitCommand build() {
-        return new BukkitCommand(alias, description, permission, argumentTypes, executor);
+        return new BukkitCommand(name, alias, description, permission, mandatoryArguments, optionalArguments, executor);
     }
 
 }

@@ -4,8 +4,9 @@ import lombok.extern.log4j.Log4j2;
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
-import me.hgsoft.minecraft.devcommand.factory.CommandFactory;
-import me.hgsoft.minecraft.devcommand.factory.CommandFactoryImpl;
+import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.factories.IObjectFactory;
+import me.hgsoft.minecraft.devcommand.factories.CommandFactory;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 
@@ -24,7 +25,7 @@ public class CommandHandler {
 
     public boolean executeCommandByAlias(Integration integration, String alias, Object... commandArgs) {
 
-        CommandFactory commandFactory = new CommandFactoryImpl(commandArgs);
+        IObjectFactory<ICommandExecutor, AbstractCommand> commandFactory = new CommandFactory(commandArgs);
         CommandRegistry commandRegistry = CommandRegistry.getInstance();
         List<AbstractCommand> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 
@@ -35,7 +36,7 @@ public class CommandHandler {
         for (AbstractCommand registeredCommand : registeredCommandsForIntegration) {
 
             if (registeredCommand.getAlias().equalsIgnoreCase(alias)) {
-                commandFactory.generateExecutor(registeredCommand).execute();
+                commandFactory.generate(registeredCommand).execute();
                 return true;
             }
 

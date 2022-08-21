@@ -3,9 +3,7 @@ package me.hgsoft.minecraft.devcommand.register;
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandRegistry implements IRegistry<Integration, AbstractCommand> {
 
@@ -22,7 +20,7 @@ public class CommandRegistry implements IRegistry<Integration, AbstractCommand> 
         if (registeredCommands.containsKey(key) && registeredCommands.get(key) != null) {
             registeredCommands.get(key).add(value);
         } else {
-            registeredCommands.put(key, List.of(value));
+            registeredCommands.put(key, new ArrayList<>(List.of(value)));
         }
     }
 

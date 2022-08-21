@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.factory;
+package me.hgsoft.minecraft.devcommand.factories;
 
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
@@ -8,25 +8,17 @@ import org.bukkit.command.CommandSender;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
-/**
- * Command Factory
- *
- * Produces plugin's commands.
- *
- * @author Hugo1307
- */
-
-public class CommandFactoryImpl implements CommandFactory {
+public class CommandFactory implements IObjectFactory<ICommandExecutor, AbstractCommand> {
 
     private final Object[] executorArgs;
 
-    public CommandFactoryImpl(Object... executorArgs) {
+    public CommandFactory(Object... executorArgs) {
         this.executorArgs = executorArgs;
     }
 
     @Override
     @SuppressWarnings("all")
-    public ICommandExecutor generateExecutor(AbstractCommand abstractCommand) {
+    public ICommandExecutor generate(AbstractCommand abstractCommand) {
 
         Class<? extends ICommandExecutor> executor = abstractCommand.getExecutor();
         ICommandExecutor executorInstance;
@@ -36,7 +28,7 @@ public class CommandFactoryImpl implements CommandFactory {
             Constructor<? extends ICommandExecutor> executorConstructor;
 
             if (abstractCommand instanceof BukkitCommand) {
-                executorConstructor = executor.getConstructor(AbstractCommand.class, CommandSender.class, String[].class);
+                executorConstructor = executor.getConstructor(BukkitCommand.class, CommandSender.class, String[].class);
                 executorInstance = executorConstructor.newInstance(abstractCommand, executorArgs[0], Arrays.copyOfRange(executorArgs, 1, executorArgs.length, String[].class));
             } else {
                 executorInstance = null;

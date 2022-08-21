@@ -12,6 +12,7 @@ import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 @EqualsAndHashCode
 public abstract class AbstractCommand {
 
+    private final String name;
     private final String alias;
     private final String description;
     private final Class<? extends ICommandExecutor> executor;
