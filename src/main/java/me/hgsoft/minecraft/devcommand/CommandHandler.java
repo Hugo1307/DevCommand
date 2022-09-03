@@ -3,6 +3,7 @@ package me.hgsoft.minecraft.devcommand;
 import lombok.extern.log4j.Log4j2;
 import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
 import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
+import me.hgsoft.minecraft.devcommand.exceptions.AutoConfigurationException;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
 import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
 import me.hgsoft.minecraft.devcommand.factories.IObjectFactory;
@@ -11,13 +12,16 @@ import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Log4j2
 public class CommandHandler {
 
     private static CommandHandler currentInstance;
 
-    private CommandHandler() { }
+    private CommandHandler() {
+    }
 
     public void registerCommand(Integration integration, AbstractCommand command) {
         CommandRegistry.getInstance().add(integration, command);
@@ -54,13 +58,24 @@ public class CommandHandler {
 
         CommandDiscoveryService commandDiscoveryService = new CommandDiscoveryService(integration);
 
-        commandDiscoveryService.getCommandExecutorClasses()
+        List<AbstractCommand> discoveredAbstractCommandList = commandDiscoveryService.getCommandExecutorClasses()
                 .stream()
                 .map(commandDiscoveryService::executorClassToCommand)
-                .forEach(commandExecutor -> {
-                    CommandRegistry.getInstance().add(integration, commandExecutor);
-                    log.info(String.format("Loaded command '%s' from '%s'.", commandExecutor.getAlias(), integration.getName()));
-                });
+                .collect(Collectors.toList());
+
+        boolean hasRepeatedAliases = discoveredAbstractCommandList.stream()
+                .map(AbstractCommand::getAlias)
+                .distinct()
+                .count() != discoveredAbstractCommandList.size();
+
+        if (hasRepeatedAliases) {
+            throw new AutoConfigurationException("Unable to auto configure commands as there are commands with repeated aliases.");
+        }
+
+        discoveredAbstractCommandList.forEach(commandExecutor -> {
+            CommandRegistry.getInstance().add(integration, commandExecutor);
+            log.info(String.format("Loaded command '%s' from '%s'.", commandExecutor.getAlias(), integration.getName()));
+        });
 
     }
 

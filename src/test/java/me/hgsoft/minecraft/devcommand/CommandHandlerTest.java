@@ -77,7 +77,7 @@ class CommandHandlerTest {
         commandHandler.initCommandsAutoConfiguration(integrationStub);
 
         assertNotNull(commandRegistry.getValues(integrationStub));
-        assertEquals(1, commandRegistry.getValues(integrationStub).size());
+        assertEquals(2, commandRegistry.getValues(integrationStub).size());
         assertEquals(bukkitCommandStub, commandRegistry.getValues(integrationStub).get(0));
 
     }
