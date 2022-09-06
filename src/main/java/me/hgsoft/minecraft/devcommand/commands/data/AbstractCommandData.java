@@ -1,20 +1,20 @@
-package me.hgsoft.minecraft.devcommand.commands;
+package me.hgsoft.minecraft.devcommand.commands.data;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
 
 @Getter
 @RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode
-public abstract class AbstractCommand {
+public abstract class AbstractCommandData {
 
     private final String name;
     private final String alias;
     private final String description;
-    private final Class<? extends ICommandExecutor> executor;
+    private final Class<? extends IDevCommandExecutor> executor;
 
 }

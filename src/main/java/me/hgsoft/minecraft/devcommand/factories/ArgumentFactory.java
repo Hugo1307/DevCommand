@@ -1,6 +1,6 @@
 package me.hgsoft.minecraft.devcommand.factories;
 
-import me.hgsoft.minecraft.devcommand.factories.validators.ICommandArgument;
+import me.hgsoft.minecraft.devcommand.validators.ICommandArgument;
 
 import java.lang.reflect.Constructor;
 

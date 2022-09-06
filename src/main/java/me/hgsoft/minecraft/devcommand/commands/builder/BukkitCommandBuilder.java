@@ -1,10 +1,10 @@
 package me.hgsoft.minecraft.devcommand.commands.builder;
 
-import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
-import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
-import me.hgsoft.minecraft.devcommand.factories.validators.CommandArgument;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 
-public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilder, BukkitCommand> {
+public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilder, BukkitCommandData> {
 
     private String name;
     private String alias;
@@ -12,9 +12,9 @@ public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilde
     private String permission;
     private Class<? extends CommandArgument<?>>[] mandatoryArguments;
     private Class<? extends CommandArgument<?>>[] optionalArguments;
-    private Class<? extends ICommandExecutor> executor;
+    private Class<? extends IDevCommandExecutor> executor;
 
-    public BukkitCommandBuilder(String alias, Class<? extends ICommandExecutor> executor) {
+    public BukkitCommandBuilder(String alias, Class<? extends IDevCommandExecutor> executor) {
         this.alias = alias;
         this.executor = executor;
     }
@@ -38,7 +38,7 @@ public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilde
     }
 
     @Override
-    public BukkitCommandBuilder withExecutor(Class<? extends ICommandExecutor> executor) {
+    public BukkitCommandBuilder withExecutor(Class<? extends IDevCommandExecutor> executor) {
         this.executor = executor;
         return this;
     }
@@ -60,8 +60,8 @@ public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilde
         return this;
     }
 
-    public BukkitCommand build() {
-        return new BukkitCommand(name, alias, description, permission, mandatoryArguments, optionalArguments, executor);
+    public BukkitCommandData build() {
+        return new BukkitCommandData(name, alias, description, permission, mandatoryArguments, optionalArguments, executor);
     }
 
 }

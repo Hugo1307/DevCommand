@@ -1,6 +1,6 @@
 package me.hgsoft.minecraft.devcommand.annotations;
 
-import me.hgsoft.minecraft.devcommand.factories.validators.CommandArgument;
+import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

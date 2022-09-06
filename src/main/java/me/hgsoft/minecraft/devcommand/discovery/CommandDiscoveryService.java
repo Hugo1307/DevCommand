@@ -3,11 +3,11 @@ package me.hgsoft.minecraft.devcommand.discovery;
 import lombok.Getter;
 import me.hgsoft.minecraft.devcommand.annotations.ArgsValidation;
 import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
-import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
-import me.hgsoft.minecraft.devcommand.factories.validators.CommandArgument;
+import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 import org.reflections.Reflections;
 
 import java.util.Set;
@@ -24,7 +24,7 @@ public class CommandDiscoveryService {
         this.reflectionUtils = new Reflections(integration.getBasePackage());
     }
 
-    public Set<Class<? extends ICommandExecutor>> getCommandExecutorClasses() {
+    public Set<Class<? extends IDevCommandExecutor>> getCommandExecutorClasses() {
         return reflectionUtils.getTypesAnnotatedWith(Command.class)
                 .stream()
                 .filter(this::containsCommandAnnotation)
@@ -33,7 +33,7 @@ public class CommandDiscoveryService {
                 .collect(Collectors.toSet());
     }
 
-    public AbstractCommand executorClassToCommand(Class<? extends ICommandExecutor> commandExecutorClass) {
+    public AbstractCommandData executorClassToCommand(Class<? extends IDevCommandExecutor> commandExecutorClass) {
 
         Class<? extends CommandArgument<?>>[] argsValidationTypes = null;
 
@@ -73,12 +73,12 @@ public class CommandDiscoveryService {
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends ICommandExecutor> getCommandExecutor(Class<?> classToCheck) {
-        return isValidCommandClass(classToCheck) ? (Class<? extends ICommandExecutor>) classToCheck : null;
+    private Class<? extends IDevCommandExecutor> getCommandExecutor(Class<?> classToCheck) {
+        return isValidCommandClass(classToCheck) ? (Class<? extends IDevCommandExecutor>) classToCheck : null;
     }
 
     private boolean isValidCommandClass(Class<?> classToCheck) {
-        return ICommandExecutor.class.isAssignableFrom(classToCheck);
+        return IDevCommandExecutor.class.isAssignableFrom(classToCheck);
     }
 
 }

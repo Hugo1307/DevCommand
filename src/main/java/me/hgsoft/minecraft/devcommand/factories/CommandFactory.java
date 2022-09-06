@@ -1,14 +1,14 @@
 package me.hgsoft.minecraft.devcommand.factories;
 
-import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
-import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
-import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
-public class CommandFactory implements IObjectFactory<ICommandExecutor, AbstractCommand> {
+public class CommandFactory implements IObjectFactory<IDevCommandExecutor, AbstractCommandData> {
 
     private final Object[] executorArgs;
 
@@ -18,18 +18,18 @@ public class CommandFactory implements IObjectFactory<ICommandExecutor, Abstract
 
     @Override
     @SuppressWarnings("all")
-    public ICommandExecutor generate(AbstractCommand abstractCommand) {
+    public IDevCommandExecutor generate(AbstractCommandData abstractCommandData) {
 
-        Class<? extends ICommandExecutor> executor = abstractCommand.getExecutor();
-        ICommandExecutor executorInstance;
+        Class<? extends IDevCommandExecutor> executor = abstractCommandData.getExecutor();
+        IDevCommandExecutor executorInstance;
 
         try {
 
-            Constructor<? extends ICommandExecutor> executorConstructor;
+            Constructor<? extends IDevCommandExecutor> executorConstructor;
 
-            if (abstractCommand instanceof BukkitCommand) {
-                executorConstructor = executor.getConstructor(BukkitCommand.class, CommandSender.class, String[].class);
-                executorInstance = executorConstructor.newInstance(abstractCommand, executorArgs[0], Arrays.copyOfRange(executorArgs, 1, executorArgs.length, String[].class));
+            if (abstractCommandData instanceof BukkitCommandData) {
+                executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
+                executorInstance = executorConstructor.newInstance(abstractCommandData, executorArgs[0], Arrays.copyOfRange(executorArgs, 1, executorArgs.length, String[].class));
             } else {
                 executorInstance = null;
             }

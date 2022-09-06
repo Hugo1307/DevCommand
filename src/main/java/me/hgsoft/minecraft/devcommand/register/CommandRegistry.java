@@ -1,22 +1,22 @@
 package me.hgsoft.minecraft.devcommand.register;
 
-import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 
 import java.util.*;
 
-public class CommandRegistry implements IRegistry<Integration, AbstractCommand> {
+public class CommandRegistry implements IRegistry<Integration, AbstractCommandData> {
 
     private static CommandRegistry instance;
 
-    private final Map<Integration, List<AbstractCommand>> registeredCommands;
+    private final Map<Integration, List<AbstractCommandData>> registeredCommands;
 
     private CommandRegistry() {
         this.registeredCommands = new HashMap<>();
     }
 
     @Override
-    public void add(Integration key, AbstractCommand value) {
+    public void add(Integration key, AbstractCommandData value) {
         if (registeredCommands.containsKey(key) && registeredCommands.get(key) != null) {
             registeredCommands.get(key).add(value);
         } else {
@@ -30,12 +30,12 @@ public class CommandRegistry implements IRegistry<Integration, AbstractCommand> 
     }
 
     @Override
-    public List<AbstractCommand> getValues(Integration key) {
+    public List<AbstractCommandData> getValues(Integration key) {
         return registeredCommands.get(key);
     }
 
     @Override
-    public void setValues(Integration key, List<AbstractCommand> value) {
+    public void setValues(Integration key, List<AbstractCommandData> value) {
         registeredCommands.put(key, value);
     }
 

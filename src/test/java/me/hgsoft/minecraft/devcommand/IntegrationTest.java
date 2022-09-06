@@ -1,6 +1,6 @@
 package me.hgsoft.minecraft.devcommand;
 
-import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
@@ -39,7 +39,7 @@ class IntegrationTest {
     @Test
     void registerAndExecuteBukkitCommand() {
 
-        BukkitCommand bukkitCommand = new BukkitCommandBuilder("help bukkit", BukkitTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("help bukkit", BukkitTestCommand.class)
                 .withDescription("Help Command")
                 .withPermission("dev_commands.commands.help")
                 .build();

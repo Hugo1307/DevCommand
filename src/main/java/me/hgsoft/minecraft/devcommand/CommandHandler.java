@@ -1,11 +1,11 @@
 package me.hgsoft.minecraft.devcommand;
 
 import lombok.extern.log4j.Log4j2;
-import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
 import me.hgsoft.minecraft.devcommand.exceptions.AutoConfigurationException;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
-import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
 import me.hgsoft.minecraft.devcommand.factories.IObjectFactory;
 import me.hgsoft.minecraft.devcommand.factories.CommandFactory;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
@@ -13,31 +13,29 @@ import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Log4j2
 public class CommandHandler {
 
     private static CommandHandler currentInstance;
 
-    private CommandHandler() {
-    }
+    private CommandHandler() { }
 
-    public void registerCommand(Integration integration, AbstractCommand command) {
+    public void registerCommand(Integration integration, AbstractCommandData command) {
         CommandRegistry.getInstance().add(integration, command);
     }
 
     public boolean executeCommandByAlias(Integration integration, String alias, Object... commandArgs) {
 
-        IObjectFactory<ICommandExecutor, AbstractCommand> commandFactory = new CommandFactory(commandArgs);
+        IObjectFactory<IDevCommandExecutor, AbstractCommandData> commandFactory = new CommandFactory(commandArgs);
         CommandRegistry commandRegistry = CommandRegistry.getInstance();
-        List<AbstractCommand> registeredCommandsForIntegration = commandRegistry.getValues(integration);
+        List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 
         if (registeredCommandsForIntegration == null) {
             return false;
         }
 
-        for (AbstractCommand registeredCommand : registeredCommandsForIntegration) {
+        for (AbstractCommandData registeredCommand : registeredCommandsForIntegration) {
 
             if (registeredCommand.getAlias().equalsIgnoreCase(alias)) {
                 commandFactory.generate(registeredCommand).execute();
@@ -58,23 +56,23 @@ public class CommandHandler {
 
         CommandDiscoveryService commandDiscoveryService = new CommandDiscoveryService(integration);
 
-        List<AbstractCommand> discoveredAbstractCommandList = commandDiscoveryService.getCommandExecutorClasses()
+        List<AbstractCommandData> discoveredAbstractCommandDataList = commandDiscoveryService.getCommandExecutorClasses()
                 .stream()
                 .map(commandDiscoveryService::executorClassToCommand)
                 .collect(Collectors.toList());
 
-        boolean hasRepeatedAliases = discoveredAbstractCommandList.stream()
-                .map(AbstractCommand::getAlias)
+        boolean hasRepeatedAliases = discoveredAbstractCommandDataList.stream()
+                .map(AbstractCommandData::getAlias)
                 .distinct()
-                .count() != discoveredAbstractCommandList.size();
+                .count() != discoveredAbstractCommandDataList.size();
 
         if (hasRepeatedAliases) {
             throw new AutoConfigurationException("Unable to autoconfigure commands as there are commands with repeated aliases.");
         }
 
-        discoveredAbstractCommandList.forEach(commandExecutor -> {
-            CommandRegistry.getInstance().add(integration, commandExecutor);
-            log.info(String.format("Loaded command '%s' from '%s'.", commandExecutor.getAlias(), integration.getName()));
+        discoveredAbstractCommandDataList.forEach(abstractCommand -> {
+            registerCommand(integration, abstractCommand);
+            log.info(String.format("Loaded command '%s' from '%s'.", abstractCommand.getAlias(), integration.getName()));
         });
 
     }

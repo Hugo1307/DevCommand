@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.factories.validators;
+package me.hgsoft.minecraft.devcommand.validators;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

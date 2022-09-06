@@ -1,9 +1,9 @@
 package me.hgsoft.minecraft.devcommand.factory;
 
-import me.hgsoft.minecraft.devcommand.commands.AbstractCommand;
-import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
-import me.hgsoft.minecraft.devcommand.executors.ICommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
 import me.hgsoft.minecraft.devcommand.factories.CommandFactory;
 import me.hgsoft.minecraft.devcommand.factories.IObjectFactory;
 import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
@@ -16,8 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CommandFactoryTest {
 
-    private IObjectFactory<ICommandExecutor, AbstractCommand> bukkitCommandFactory;
-    private BukkitCommand bukkitCommand;
+    private IObjectFactory<IDevCommandExecutor, AbstractCommandData> bukkitCommandFactory;
+    private BukkitCommandData bukkitCommand;
 
     @BeforeEach
     void setUp() {
@@ -30,7 +30,7 @@ class CommandFactoryTest {
 
     @Test
     void generateExecutorForBukkitCommand() {
-        ICommandExecutor generatedBukkitCommandExecutor = bukkitCommandFactory.generate(bukkitCommand);
+        IDevCommandExecutor generatedBukkitCommandExecutor = bukkitCommandFactory.generate(bukkitCommand);
         Assertions.assertTrue(generatedBukkitCommandExecutor instanceof BukkitTestCommand);
     }
 

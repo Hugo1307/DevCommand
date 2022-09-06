@@ -1,26 +1,26 @@
-package me.hgsoft.minecraft.devcommand.executors;
+package me.hgsoft.minecraft.devcommand.commands.executors;
 
 import lombok.Generated;
 import lombok.Getter;
-import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.exceptions.ArgumentsConfigException;
 import me.hgsoft.minecraft.devcommand.exceptions.PermissionConfigException;
 import me.hgsoft.minecraft.devcommand.factories.ArgumentFactory;
-import me.hgsoft.minecraft.devcommand.factories.validators.CommandArgument;
-import me.hgsoft.minecraft.devcommand.factories.validators.ICommandArgument;
+import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
+import me.hgsoft.minecraft.devcommand.validators.ICommandArgument;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 
 @Generated
 @Getter
-public abstract class BukkitCommandExecutor implements ICommandExecutor {
+public abstract class BukkitDevCommandExecutor implements IDevCommandExecutor {
 
-    private final BukkitCommand command;
+    private final BukkitCommandData command;
     private final CommandSender commandSender;
     private final String[] args;
 
-    public BukkitCommandExecutor(BukkitCommand command, CommandSender commandSender, String[] args) {
+    public BukkitDevCommandExecutor(BukkitCommandData command, CommandSender commandSender, String[] args) {
         this.command = command;
         this.commandSender = commandSender;
         this.args = args;

@@ -1,12 +1,12 @@
 package me.hgsoft.minecraft.devcommand;
 
-import me.hgsoft.minecraft.devcommand.commands.BukkitCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
-import me.hgsoft.minecraft.devcommand.factories.validators.IntegerArgument;
+import me.hgsoft.minecraft.devcommand.validators.IntegerArgument;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ class CommandHandlerTest {
 
     private CommandHandler commandHandler;
     private CommandRegistry commandRegistry;
-    private BukkitCommand bukkitCommandStub;
+    private BukkitCommandData bukkitCommandStub;
     private Integration integrationStub;
 
     @BeforeEach
