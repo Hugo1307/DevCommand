@@ -225,7 +225,7 @@ class BukkitCommandExecutorTest {
         commandHandler.executeCommandByAlias(integration, "test_arg", commandSender, "true");
 
         assertTrue(ArgumentTestCommand.called);
-        assertTrue(ArgumentTestCommand.hasValidArgs);
+        assertFalse(ArgumentTestCommand.hasValidArgs);
 
     }
 

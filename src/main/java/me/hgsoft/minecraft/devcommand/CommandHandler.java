@@ -69,7 +69,7 @@ public class CommandHandler {
                 .count() != discoveredAbstractCommandList.size();
 
         if (hasRepeatedAliases) {
-            throw new AutoConfigurationException("Unable to auto configure commands as there are commands with repeated aliases.");
+            throw new AutoConfigurationException("Unable to autoconfigure commands as there are commands with repeated aliases.");
         }
 
         discoveredAbstractCommandList.forEach(commandExecutor -> {

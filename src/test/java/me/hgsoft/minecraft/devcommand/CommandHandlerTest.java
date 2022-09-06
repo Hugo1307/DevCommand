@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommandHandlerTest {
@@ -28,6 +29,7 @@ class CommandHandlerTest {
         integrationStub = new Integration("myIntegration", "me.hgsoft.");
         bukkitCommandStub = new BukkitCommandBuilder("test", BukkitTestCommand.class)
                 .withDescription("Bukkit Test Command!")
+                .withPermission("command.bukkit_test")
                 .withMandatoryArguments(IntegerArgument.class)
                 .build();
     }
@@ -76,9 +78,10 @@ class CommandHandlerTest {
 
         commandHandler.initCommandsAutoConfiguration(integrationStub);
 
-        assertNotNull(commandRegistry.getValues(integrationStub));
-        assertEquals(2, commandRegistry.getValues(integrationStub).size());
-        assertEquals(bukkitCommandStub, commandRegistry.getValues(integrationStub).get(0));
+        assertThat(commandRegistry.getValues(integrationStub))
+                .isNotNull()
+                .hasSize(2)
+                .contains(bukkitCommandStub);
 
     }
 
