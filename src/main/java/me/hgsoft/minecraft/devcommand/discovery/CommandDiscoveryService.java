@@ -5,7 +5,7 @@ import me.hgsoft.minecraft.devcommand.annotations.ArgsValidation;
 import me.hgsoft.minecraft.devcommand.annotations.Command;
 import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
-import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 import org.reflections.Reflections;
@@ -24,7 +24,7 @@ public class CommandDiscoveryService {
         this.reflectionUtils = new Reflections(integration.getBasePackage());
     }
 
-    public Set<Class<? extends IDevCommandExecutor>> getCommandExecutorClasses() {
+    public Set<Class<? extends IDevCommand>> getCommandExecutorClasses() {
         return reflectionUtils.getTypesAnnotatedWith(Command.class)
                 .stream()
                 .filter(this::containsCommandAnnotation)
@@ -33,7 +33,7 @@ public class CommandDiscoveryService {
                 .collect(Collectors.toSet());
     }
 
-    public AbstractCommandData executorClassToCommand(Class<? extends IDevCommandExecutor> commandExecutorClass) {
+    public AbstractCommandData executorClassToCommand(Class<? extends IDevCommand> commandExecutorClass) {
 
         Class<? extends CommandArgument<?>>[] argsValidationTypes = null;
 
@@ -73,12 +73,12 @@ public class CommandDiscoveryService {
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends IDevCommandExecutor> getCommandExecutor(Class<?> classToCheck) {
-        return isValidCommandClass(classToCheck) ? (Class<? extends IDevCommandExecutor>) classToCheck : null;
+    private Class<? extends IDevCommand> getCommandExecutor(Class<?> classToCheck) {
+        return isValidCommandClass(classToCheck) ? (Class<? extends IDevCommand>) classToCheck : null;
     }
 
     private boolean isValidCommandClass(Class<?> classToCheck) {
-        return IDevCommandExecutor.class.isAssignableFrom(classToCheck);
+        return IDevCommand.class.isAssignableFrom(classToCheck);
     }
 
 }

@@ -7,8 +7,8 @@ import me.hgsoft.minecraft.devcommand.exceptions.ArgumentsConfigException;
 import me.hgsoft.minecraft.devcommand.exceptions.PermissionConfigException;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
-import me.hgsoft.minecraft.devcommand.utils.arguments.ArgumentTestCommand;
-import me.hgsoft.minecraft.devcommand.utils.arguments.NoAnnotationArgumentTestCommand;
+import me.hgsoft.minecraft.devcommand.utils.arguments.ArgumentDevCommandTestCommand;
+import me.hgsoft.minecraft.devcommand.utils.arguments.NoAnnotationArgumentTestCommandDevCommand;
 import me.hgsoft.minecraft.devcommand.validators.BooleanArgument;
 import me.hgsoft.minecraft.devcommand.validators.DoubleArgument;
 import me.hgsoft.minecraft.devcommand.validators.IntegerArgument;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BukkitDevCommandExecutorTest {
+class BukkitDevCommandTest {
 
     @Mock
     private CommandSender commandSender;
@@ -43,9 +43,9 @@ class BukkitDevCommandExecutorTest {
 
     @AfterEach
     void tearDown() {
-        NoAnnotationArgumentTestCommand.called = false;
-        NoAnnotationArgumentTestCommand.hasPermission = false;
-        NoAnnotationArgumentTestCommand.hasValidArgs = false;
+        NoAnnotationArgumentTestCommandDevCommand.called = false;
+        NoAnnotationArgumentTestCommandDevCommand.hasPermission = false;
+        NoAnnotationArgumentTestCommandDevCommand.hasValidArgs = false;
         commandRegistry.setValues(integration, null);
     }
 
@@ -53,7 +53,7 @@ class BukkitDevCommandExecutorTest {
     void hasPermissionToExecuteCommand() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .build();
 
@@ -67,15 +67,15 @@ class BukkitDevCommandExecutorTest {
             // Ignored exception
         }
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertTrue(NoAnnotationArgumentTestCommand.hasPermission);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.hasPermission);
 
     }
 
     @Test
     void hasPermissionToExecuteCommand_NotConfiguredException() {
 
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .build();
 
         commandHandler.registerCommand(integration, bukkitCommand);
@@ -90,7 +90,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_Mandatory() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withMandatoryArguments(IntegerArgument.class, DoubleArgument.class, StringArgument.class, BooleanArgument.class)
                 .build();
@@ -98,8 +98,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "1", "22.222", "hey", "true");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertTrue(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -107,7 +107,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_Mandatory_InvalidArguments() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withMandatoryArguments(IntegerArgument.class, DoubleArgument.class, StringArgument.class, BooleanArgument.class)
                 .build();
@@ -115,8 +115,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "Hello!", ".22aa", "Valid!", "ash");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertFalse(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertFalse(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -124,7 +124,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_Optional() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withOptionalArguments(IntegerArgument.class, DoubleArgument.class)
                 .build();
@@ -132,8 +132,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "1");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertTrue(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -141,7 +141,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_Optional_InvalidArguments() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withOptionalArguments(IntegerArgument.class, DoubleArgument.class)
                 .build();
@@ -149,8 +149,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "Hey", ".22");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertFalse(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertFalse(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -158,7 +158,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_Mandatory_And_Optional() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withMandatoryArguments(BooleanArgument.class)
                 .withOptionalArguments(IntegerArgument.class, DoubleArgument.class)
@@ -167,8 +167,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "True", "22");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertTrue(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -176,7 +176,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_Mandatory_And_Optional_Invalid() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withMandatoryArguments(BooleanArgument.class)
                 .withOptionalArguments(IntegerArgument.class, DoubleArgument.class)
@@ -185,8 +185,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "true", "Boa tarde", ".22");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertFalse(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertFalse(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -194,7 +194,7 @@ class BukkitDevCommandExecutorTest {
     void hasValidArgs_WeirdArguments() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .withMandatoryArguments(IntegerArgument.class, DoubleArgument.class, StringArgument.class, BooleanArgument.class)
                 .build();
@@ -202,8 +202,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.registerCommand(integration, bukkitCommand);
         commandHandler.executeCommandByAlias(integration, "test", commandSender, "-78", ".222", "20", "yes");
 
-        assertTrue(NoAnnotationArgumentTestCommand.called);
-        assertTrue(NoAnnotationArgumentTestCommand.hasValidArgs);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.called);
+        assertTrue(NoAnnotationArgumentTestCommandDevCommand.hasValidArgs);
 
     }
 
@@ -213,8 +213,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.initCommandsAutoConfiguration(integration);
         commandHandler.executeCommandByAlias(integration, "test_arg", commandSender, "22");
 
-        assertTrue(ArgumentTestCommand.called);
-        assertTrue(ArgumentTestCommand.hasValidArgs);
+        assertTrue(ArgumentDevCommandTestCommand.called);
+        assertTrue(ArgumentDevCommandTestCommand.hasValidArgs);
 
     }
 
@@ -224,8 +224,8 @@ class BukkitDevCommandExecutorTest {
         commandHandler.initCommandsAutoConfiguration(integration);
         commandHandler.executeCommandByAlias(integration, "test_arg", commandSender, "true");
 
-        assertTrue(ArgumentTestCommand.called);
-        assertFalse(ArgumentTestCommand.hasValidArgs);
+        assertTrue(ArgumentDevCommandTestCommand.called);
+        assertFalse(ArgumentDevCommandTestCommand.hasValidArgs);
 
     }
 
@@ -233,7 +233,7 @@ class BukkitDevCommandExecutorTest {
     void argumentsConfigExceptionTest() {
 
         String commandPermission = "commands.no_annotation_test";
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("test", NoAnnotationArgumentTestCommandDevCommand.class)
                 .withPermission(commandPermission)
                 .build();
 

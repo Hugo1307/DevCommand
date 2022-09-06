@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,6 +15,6 @@ public abstract class AbstractCommandData {
     private final String name;
     private final String alias;
     private final String description;
-    private final Class<? extends IDevCommandExecutor> executor;
+    private final Class<? extends IDevCommand> executor;
 
 }

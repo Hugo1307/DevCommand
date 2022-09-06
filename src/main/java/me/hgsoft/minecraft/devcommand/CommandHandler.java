@@ -5,7 +5,7 @@ import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
 import me.hgsoft.minecraft.devcommand.exceptions.AutoConfigurationException;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
-import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
 import me.hgsoft.minecraft.devcommand.factories.IObjectFactory;
 import me.hgsoft.minecraft.devcommand.factories.CommandFactory;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
@@ -27,7 +27,7 @@ public class CommandHandler {
 
     public boolean executeCommandByAlias(Integration integration, String alias, Object... commandArgs) {
 
-        IObjectFactory<IDevCommandExecutor, AbstractCommandData> commandFactory = new CommandFactory(commandArgs);
+        IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArgs);
         CommandRegistry commandRegistry = CommandRegistry.getInstance();
         List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 

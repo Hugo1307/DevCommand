@@ -1,6 +1,6 @@
-package me.hgsoft.minecraft.devcommand.commands.executors;
+package me.hgsoft.minecraft.devcommand.commands;
 
-public interface IDevCommandExecutor {
+public interface IDevCommand {
 
     void execute();
     boolean hasPermissionToExecuteCommand();

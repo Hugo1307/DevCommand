@@ -5,7 +5,7 @@ import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
-import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
+import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import me.hgsoft.minecraft.devcommand.validators.IntegerArgument;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +27,7 @@ class CommandHandlerTest {
         commandHandler = CommandHandler.createOrGetInstance();
         commandRegistry = CommandRegistry.getInstance();
         integrationStub = new Integration("myIntegration", "me.hgsoft.");
-        bukkitCommandStub = new BukkitCommandBuilder("test", BukkitTestCommand.class)
+        bukkitCommandStub = new BukkitCommandBuilder("test", TestCommandDevCommand.class)
                 .withDescription("Bukkit Test Command!")
                 .withPermission("command.bukkit_test")
                 .withMandatoryArguments(IntegerArgument.class)
@@ -37,7 +37,7 @@ class CommandHandlerTest {
     @AfterEach
     void tearDown() {
         commandRegistry.setValues(integrationStub, null);
-        BukkitTestCommand.called = false;
+        TestCommandDevCommand.called = false;
     }
 
     @Test
@@ -58,7 +58,7 @@ class CommandHandlerTest {
         boolean commandSuccessfullyExecuted = commandHandler.executeCommandByAlias(integrationStub, bukkitCommandStub.getAlias(), null, "1");
 
         assertFalse(commandSuccessfullyExecuted);
-        assertFalse(BukkitTestCommand.called);
+        assertFalse(TestCommandDevCommand.called);
 
     }
 
@@ -69,7 +69,7 @@ class CommandHandlerTest {
         boolean commandSuccessfullyExecuted = commandHandler.executeCommandByAlias(integrationStub, bukkitCommandStub.getAlias(), null, "good", "afternoon");
 
         assertTrue(commandSuccessfullyExecuted);
-        assertTrue(BukkitTestCommand.called);
+        assertTrue(TestCommandDevCommand.called);
 
     }
 

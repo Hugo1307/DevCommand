@@ -1,16 +1,16 @@
 package me.hgsoft.minecraft.devcommand.utils.arguments;
 
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
-import me.hgsoft.minecraft.devcommand.commands.executors.BukkitDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
 import org.bukkit.command.CommandSender;
 
-public class NoAnnotationArgumentTestCommand extends BukkitDevCommandExecutor {
+public class NoAnnotationArgumentTestCommandDevCommand extends BukkitDevCommand {
 
     public static boolean called;
     public static boolean hasPermission;
     public static boolean hasValidArgs;
 
-    public NoAnnotationArgumentTestCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
+    public NoAnnotationArgumentTestCommandDevCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
         super(command, commandSender, args);
     }
 

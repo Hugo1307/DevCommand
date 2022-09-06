@@ -4,7 +4,7 @@ import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
-import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
+import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,22 +24,22 @@ class IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        BukkitTestCommand.called = false;
+        TestCommandDevCommand.called = false;
     }
 
     @AfterEach
     void tearDown() {
-        BukkitTestCommand.called = false;
-        BukkitTestCommand.args = null;
-        BukkitTestCommand.command = null;
-        BukkitTestCommand.sender = null;
+        TestCommandDevCommand.called = false;
+        TestCommandDevCommand.args = null;
+        TestCommandDevCommand.command = null;
+        TestCommandDevCommand.sender = null;
         commandRegistry.setValues(pluginIntegration, null);
     }
 
     @Test
     void registerAndExecuteBukkitCommand() {
 
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("help bukkit", BukkitTestCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("help bukkit", TestCommandDevCommand.class)
                 .withDescription("Help Command")
                 .withPermission("dev_commands.commands.help")
                 .build();
@@ -48,14 +48,14 @@ class IntegrationTest {
         commandHandler.executeCommandByAlias(pluginIntegration, "help bukkit", null, "1");
 
         // The command was successfully called
-        assertTrue(BukkitTestCommand.called);
+        assertTrue(TestCommandDevCommand.called);
 
         // The sender is the same
-        assertNull(BukkitTestCommand.sender);
+        assertNull(TestCommandDevCommand.sender);
         // The args are also correct
-        assertArrayEquals(new String[] {"1"}, BukkitTestCommand.args);
+        assertArrayEquals(new String[] {"1"}, TestCommandDevCommand.args);
 
-        assertEquals(bukkitCommand, BukkitTestCommand.command);
+        assertEquals(bukkitCommand, TestCommandDevCommand.command);
 
     }
 
@@ -66,16 +66,16 @@ class IntegrationTest {
         commandHandler.executeCommandByAlias(pluginIntegration, "test", null, "good", "afternoon");
 
         // The command was successfully called
-        assertTrue(BukkitTestCommand.called);
+        assertTrue(TestCommandDevCommand.called);
 
         // The sender is the same
-        assertNull(BukkitTestCommand.sender);
+        assertNull(TestCommandDevCommand.sender);
         // The args are also correct
-        assertArrayEquals(new String[] {"good", "afternoon"}, BukkitTestCommand.args);
+        assertArrayEquals(new String[] {"good", "afternoon"}, TestCommandDevCommand.args);
 
         // The command alias is also correct
-        assertNotNull(BukkitTestCommand.command);
-        assertEquals(BukkitTestCommand.command.getAlias(), "test");
+        assertNotNull(TestCommandDevCommand.command);
+        assertEquals(TestCommandDevCommand.command.getAlias(), "test");
 
     }
 

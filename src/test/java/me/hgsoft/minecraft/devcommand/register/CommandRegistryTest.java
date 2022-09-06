@@ -3,7 +3,7 @@ package me.hgsoft.minecraft.devcommand.register;
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
-import me.hgsoft.minecraft.devcommand.utils.BukkitTestCommand;
+import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -17,7 +17,7 @@ class CommandRegistryTest {
     @BeforeEach
     void setUp() {
         commandRegistry = CommandRegistry.getInstance();
-        bukkitCommand = new BukkitCommandBuilder("test", BukkitTestCommand.class).build();
+        bukkitCommand = new BukkitCommandBuilder("test", TestCommandDevCommand.class).build();
         integrationStub = new Integration("myIntegration", null);
     }
 

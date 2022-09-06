@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.commands;
+package me.hgsoft.minecraft.devcommand.commands.executors;
 
 import lombok.NonNull;
 import me.hgsoft.minecraft.devcommand.CommandHandler;

@@ -1,7 +1,7 @@
 package me.hgsoft.minecraft.devcommand.commands.builder;
 
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
-import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
 import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 
 public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilder, BukkitCommandData> {
@@ -12,9 +12,9 @@ public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilde
     private String permission;
     private Class<? extends CommandArgument<?>>[] mandatoryArguments;
     private Class<? extends CommandArgument<?>>[] optionalArguments;
-    private Class<? extends IDevCommandExecutor> executor;
+    private Class<? extends IDevCommand> executor;
 
-    public BukkitCommandBuilder(String alias, Class<? extends IDevCommandExecutor> executor) {
+    public BukkitCommandBuilder(String alias, Class<? extends IDevCommand> executor) {
         this.alias = alias;
         this.executor = executor;
     }
@@ -38,7 +38,7 @@ public class BukkitCommandBuilder implements ICommandBuilder<BukkitCommandBuilde
     }
 
     @Override
-    public BukkitCommandBuilder withExecutor(Class<? extends IDevCommandExecutor> executor) {
+    public BukkitCommandBuilder withExecutor(Class<? extends IDevCommand> executor) {
         this.executor = executor;
         return this;
     }

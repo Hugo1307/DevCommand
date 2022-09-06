@@ -2,13 +2,13 @@ package me.hgsoft.minecraft.devcommand.factories;
 
 import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
-import me.hgsoft.minecraft.devcommand.commands.executors.IDevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
 import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
-public class CommandFactory implements IObjectFactory<IDevCommandExecutor, AbstractCommandData> {
+public class CommandFactory implements IObjectFactory<IDevCommand, AbstractCommandData> {
 
     private final Object[] executorArgs;
 
@@ -18,14 +18,14 @@ public class CommandFactory implements IObjectFactory<IDevCommandExecutor, Abstr
 
     @Override
     @SuppressWarnings("all")
-    public IDevCommandExecutor generate(AbstractCommandData abstractCommandData) {
+    public IDevCommand generate(AbstractCommandData abstractCommandData) {
 
-        Class<? extends IDevCommandExecutor> executor = abstractCommandData.getExecutor();
-        IDevCommandExecutor executorInstance;
+        Class<? extends IDevCommand> executor = abstractCommandData.getExecutor();
+        IDevCommand executorInstance;
 
         try {
 
-            Constructor<? extends IDevCommandExecutor> executorConstructor;
+            Constructor<? extends IDevCommand> executorConstructor;
 
             if (abstractCommandData instanceof BukkitCommandData) {
                 executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
