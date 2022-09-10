@@ -47,7 +47,7 @@ public class Integration {
             mainPackagePathStringBuilder.append(".");
         });
 
-        mainPackagePathStringBuilder.replace(mainPackagePathStringBuilder.length()-2, mainPackagePathStringBuilder.length()-1, "");
+        mainPackagePathStringBuilder.replace(mainPackagePathStringBuilder.length()-1, mainPackagePathStringBuilder.length(), "");
 
         return mainPackagePathStringBuilder.toString();
 

@@ -32,6 +32,7 @@ public class CommandHandler {
         List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 
         if (registeredCommandsForIntegration == null) {
+            System.out.println("No Commands registered");
             return false;
         }
 
@@ -49,6 +50,8 @@ public class CommandHandler {
     }
 
     public void initCommandsAutoConfiguration(Integration integration) {
+
+        System.out.println("INTEGRATION VALID: " + integration.toString());
 
         if (!checkIntegrationValidity(integration)) {
             throw new InvalidIntegrationException(String.format("The integration %s contained an invalid base package.", integration.getName()));

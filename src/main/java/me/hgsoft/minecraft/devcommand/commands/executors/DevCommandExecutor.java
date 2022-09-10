@@ -29,16 +29,16 @@ public final class DevCommandExecutor implements CommandExecutor {
             return false;
         }
 
+        CommandHandler commandHandler = CommandHandler.createOrGetInstance();
+
         // No arguments for the command.
-        if (args.length <= 0) {
-            // TODO: Help Message.
+        if (args.length == 0) {
+            commandHandler.executeCommandByAlias(integration, "", commandSender);
             return true;
         } else if (args.length == 1) {
-            CommandHandler commandHandler = CommandHandler.createOrGetInstance();
             commandHandler.executeCommandByAlias(integration, args[0], commandSender);
             return true;
         } else {
-            CommandHandler commandHandler = CommandHandler.createOrGetInstance();
             commandHandler.executeCommandByAlias(integration, args[0], commandSender, Arrays.copyOfRange(args, 1, args.length));
             return true;
         }

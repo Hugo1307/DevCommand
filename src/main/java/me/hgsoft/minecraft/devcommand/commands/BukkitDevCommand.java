@@ -91,7 +91,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
     @Override
     public List<Object> getDependencies() {
 
-        DependencyHandler dependencyHandler = DependencyHandler.getInstance();
+        DependencyHandler dependencyHandler = DependencyHandler.createOrGetInstance();
         Integration commandIntegration = commandData.getIntegration();
 
         return Arrays.stream(getCommandData().getDependencies())

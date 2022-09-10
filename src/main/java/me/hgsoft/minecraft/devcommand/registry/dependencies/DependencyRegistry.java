@@ -3,10 +3,8 @@ package me.hgsoft.minecraft.devcommand.registry.dependencies;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.registry.IRegistry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class DependencyRegistry implements IRegistry<Integration, Object> {
 
@@ -23,7 +21,7 @@ public class DependencyRegistry implements IRegistry<Integration, Object> {
         if (registeredDependencies.containsKey(key) && registeredDependencies.get(key) != null) {
             registeredDependencies.get(key).add(value);
         } else {
-            registeredDependencies.put(key, new ArrayList<>(List.of(value)));
+            registeredDependencies.put(key, new ArrayList<>(Collections.singletonList(value)));
         }
     }
 
