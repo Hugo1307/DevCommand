@@ -1,8 +1,9 @@
-package me.hgsoft.minecraft.devcommand.register;
+package me.hgsoft.minecraft.devcommand.registry;
 
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
-import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
+import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandDataBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
+import me.hgsoft.minecraft.devcommand.registry.commands.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import org.junit.jupiter.api.*;
 
@@ -16,9 +17,9 @@ class CommandRegistryTest {
 
     @BeforeEach
     void setUp() {
-        commandRegistry = CommandRegistry.getInstance();
-        bukkitCommand = new BukkitCommandBuilder("test", TestCommandDevCommand.class).build();
         integrationStub = new Integration("myIntegration", null);
+        commandRegistry = CommandRegistry.getInstance();
+        bukkitCommand = new BukkitCommandDataBuilder("test", integrationStub, TestCommandDevCommand.class).build();
     }
 
     @AfterEach

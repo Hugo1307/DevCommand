@@ -1,7 +1,8 @@
-package me.hgsoft.minecraft.devcommand.register;
+package me.hgsoft.minecraft.devcommand.registry.commands;
 
 import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
+import me.hgsoft.minecraft.devcommand.registry.IRegistry;
 
 import java.util.*;
 

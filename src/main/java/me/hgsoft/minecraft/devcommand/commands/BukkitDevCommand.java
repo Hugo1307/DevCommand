@@ -3,14 +3,18 @@ package me.hgsoft.minecraft.devcommand.commands;
 import lombok.Generated;
 import lombok.Getter;
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import me.hgsoft.minecraft.devcommand.dependencies.DependencyHandler;
 import me.hgsoft.minecraft.devcommand.exceptions.ArgumentsConfigException;
 import me.hgsoft.minecraft.devcommand.exceptions.PermissionConfigException;
 import me.hgsoft.minecraft.devcommand.factories.ArgumentFactory;
+import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 import me.hgsoft.minecraft.devcommand.validators.ICommandArgument;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Generated
 @Getter
@@ -81,6 +85,18 @@ public abstract class BukkitDevCommand implements IDevCommand {
         }
 
         return true;
+
+    }
+
+    @Override
+    public List<Object> getDependencies() {
+
+        DependencyHandler dependencyHandler = DependencyHandler.getInstance();
+        Integration commandIntegration = commandData.getIntegration();
+
+        return Arrays.stream(getCommandData().getDependencies())
+                .map(dependencyClass -> dependencyHandler.getDependencyInstance(commandIntegration, dependencyClass))
+                .collect(Collectors.toList());
 
     }
 

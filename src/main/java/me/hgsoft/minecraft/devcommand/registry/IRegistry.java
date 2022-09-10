@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.register;
+package me.hgsoft.minecraft.devcommand.registry;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package me.hgsoft.minecraft.devcommand;
 
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
-import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
+import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandDataBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
-import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
+import me.hgsoft.minecraft.devcommand.registry.commands.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import org.junit.jupiter.api.*;
 
@@ -39,7 +39,7 @@ class IntegrationTest {
     @Test
     void registerAndExecuteBukkitCommand() {
 
-        BukkitCommandData bukkitCommand = new BukkitCommandBuilder("help bukkit", TestCommandDevCommand.class)
+        BukkitCommandData bukkitCommand = new BukkitCommandDataBuilder("help bukkit", pluginIntegration, TestCommandDevCommand.class)
                 .withDescription("Help Command")
                 .withPermission("dev_commands.commands.help")
                 .build();

@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
+import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 
 @Getter
@@ -15,8 +16,8 @@ public class BukkitCommandData extends AbstractCommandData {
     private final Class<? extends CommandArgument<?>>[] mandatoryArguments;
     private final Class<? extends CommandArgument<?>>[] optionalArguments;
 
-    public BukkitCommandData(String name, String alias, String description, String permission, Class<? extends CommandArgument<?>>[] mandatoryArguments, Class<? extends CommandArgument<?>>[] optionalArguments, Class<? extends IDevCommand> executor) {
-        super(name, alias, description, executor);
+    public BukkitCommandData(String name, String alias, String description, Integration integration, Class<?>[] dependencies, Class<? extends IDevCommand> executor, String permission, Class<? extends CommandArgument<?>>[] mandatoryArguments, Class<? extends CommandArgument<?>>[] optionalArguments) {
+        super(name, alias, description, integration, executor, dependencies);
         this.permission = permission;
         this.mandatoryArguments = mandatoryArguments;
         this.optionalArguments = optionalArguments;

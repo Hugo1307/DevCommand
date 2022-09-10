@@ -9,7 +9,7 @@ import me.hgsoft.minecraft.devcommand.commands.IDevCommand;
 import me.hgsoft.minecraft.devcommand.factories.IObjectFactory;
 import me.hgsoft.minecraft.devcommand.factories.CommandFactory;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
-import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
+import me.hgsoft.minecraft.devcommand.registry.commands.CommandRegistry;
 
 import java.util.*;
 import java.util.stream.Collectors;

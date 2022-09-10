@@ -1,10 +1,10 @@
 package me.hgsoft.minecraft.devcommand;
 
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
-import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandBuilder;
+import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandDataBuilder;
 import me.hgsoft.minecraft.devcommand.exceptions.InvalidIntegrationException;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
-import me.hgsoft.minecraft.devcommand.register.CommandRegistry;
+import me.hgsoft.minecraft.devcommand.registry.commands.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import me.hgsoft.minecraft.devcommand.validators.IntegerArgument;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +27,7 @@ class CommandHandlerTest {
         commandHandler = CommandHandler.createOrGetInstance();
         commandRegistry = CommandRegistry.getInstance();
         integrationStub = new Integration("myIntegration", "me.hgsoft.");
-        bukkitCommandStub = new BukkitCommandBuilder("test", TestCommandDevCommand.class)
+        bukkitCommandStub = new BukkitCommandDataBuilder("test", integrationStub, TestCommandDevCommand.class)
                 .withDescription("Bukkit Test Command!")
                 .withPermission("command.bukkit_test")
                 .withMandatoryArguments(IntegerArgument.class)
