@@ -1,7 +1,8 @@
 package me.hgsoft.minecraft.devcommand.commands.executors;
 
 import lombok.NonNull;
-import me.hgsoft.minecraft.devcommand.CommandHandler;
+import me.hgsoft.minecraft.devcommand.commands.handler.CommandHandler;
+import me.hgsoft.minecraft.devcommand.DevCommand;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,7 +30,8 @@ public final class DevCommandExecutor implements CommandExecutor {
             return false;
         }
 
-        CommandHandler commandHandler = CommandHandler.createOrGetInstance();
+        DevCommand devCommand = DevCommand.getOrCreateInstance();
+        CommandHandler commandHandler = devCommand.getCommandHandler();
 
         // No arguments for the command.
         if (args.length == 0) {

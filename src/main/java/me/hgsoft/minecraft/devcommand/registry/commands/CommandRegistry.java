@@ -1,18 +1,18 @@
 package me.hgsoft.minecraft.devcommand.registry.commands;
 
+import com.google.inject.Singleton;
 import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.registry.IRegistry;
 
 import java.util.*;
 
+@Singleton
 public class CommandRegistry implements IRegistry<Integration, AbstractCommandData> {
-
-    private static CommandRegistry instance;
 
     private final Map<Integration, List<AbstractCommandData>> registeredCommands;
 
-    private CommandRegistry() {
+    public CommandRegistry() {
         this.registeredCommands = new HashMap<>();
     }
 
@@ -38,12 +38,6 @@ public class CommandRegistry implements IRegistry<Integration, AbstractCommandDa
     @Override
     public void setValues(Integration key, List<AbstractCommandData> value) {
         registeredCommands.put(key, value);
-    }
-
-    public static CommandRegistry getInstance() {
-        if (instance == null)
-            instance = new CommandRegistry();
-        return instance;
     }
 
 }

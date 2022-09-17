@@ -1,6 +1,6 @@
 package me.hgsoft.minecraft.devcommand.executors;
 
-import me.hgsoft.minecraft.devcommand.CommandHandler;
+import me.hgsoft.minecraft.devcommand.commands.handler.CommandHandler;
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandDataBuilder;
 import me.hgsoft.minecraft.devcommand.exceptions.ArgumentsConfigException;
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -28,17 +29,17 @@ import static org.mockito.Mockito.when;
 class BukkitDevCommandTest {
 
     @Mock
+    private CommandRegistry commandRegistry;
+    @Mock
     private CommandSender commandSender;
+    @InjectMocks
+    private CommandHandler commandHandler;
 
     private Integration integration;
-    private CommandHandler commandHandler;
-    private CommandRegistry commandRegistry;
 
     @BeforeEach
     void setUp() {
         integration = new Integration("MyPlugin", "me");
-        commandHandler = CommandHandler.createOrGetInstance();
-        commandRegistry = CommandRegistry.getInstance();
     }
 
     @AfterEach

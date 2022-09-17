@@ -1,5 +1,7 @@
-package me.hgsoft.minecraft.devcommand;
+package me.hgsoft.minecraft.devcommand.commands.handler;
 
+import com.google.inject.Inject;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.hgsoft.minecraft.devcommand.commands.data.AbstractCommandData;
 import me.hgsoft.minecraft.devcommand.discovery.CommandDiscoveryService;
@@ -17,22 +19,23 @@ import java.util.stream.Collectors;
 @Log4j2
 public class CommandHandler {
 
-    private static CommandHandler currentInstance;
+    private final CommandRegistry commandRegistry;
 
-    private CommandHandler() { }
+    @Inject
+    public CommandHandler(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
+    }
 
     public void registerCommand(Integration integration, AbstractCommandData command) {
-        CommandRegistry.getInstance().add(integration, command);
+        commandRegistry.add(integration, command);
     }
 
     public boolean executeCommandByAlias(Integration integration, String alias, Object... commandArgs) {
 
         IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArgs);
-        CommandRegistry commandRegistry = CommandRegistry.getInstance();
         List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 
         if (registeredCommandsForIntegration == null) {
-            System.out.println("No Commands registered");
             return false;
         }
 
@@ -49,11 +52,9 @@ public class CommandHandler {
 
     }
 
-    public void initCommandsAutoConfiguration(Integration integration) {
+    public void initCommandsAutoConfiguration(@NonNull Integration integration) {
 
-        System.out.println("INTEGRATION VALID: " + integration.toString());
-
-        if (!checkIntegrationValidity(integration)) {
+        if (!integration.isValid()) {
             throw new InvalidIntegrationException(String.format("The integration %s contained an invalid base package.", integration.getName()));
         }
 
@@ -78,21 +79,6 @@ public class CommandHandler {
             log.info(String.format("Loaded command '%s' from '%s'.", abstractCommand.getAlias(), integration.getName()));
         });
 
-    }
-
-    private boolean checkIntegrationValidity(Integration integration) {
-        if (integration == null || integration.getBasePackage() == null) {
-            log.warn("Unable to find base package for Integration - Commands Auto-Configuration stopped.");
-            return false;
-        }
-        return true;
-    }
-
-    public static CommandHandler createOrGetInstance() {
-        if (currentInstance == null) {
-            currentInstance = new CommandHandler();
-        }
-        return currentInstance;
     }
 
 }

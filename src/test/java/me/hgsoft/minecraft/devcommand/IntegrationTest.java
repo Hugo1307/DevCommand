@@ -1,29 +1,30 @@
 package me.hgsoft.minecraft.devcommand;
 
+import me.hgsoft.minecraft.devcommand.commands.handler.CommandHandler;
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.commands.builder.BukkitCommandDataBuilder;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.registry.commands.CommandRegistry;
 import me.hgsoft.minecraft.devcommand.utils.TestCommandDevCommand;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class IntegrationTest {
-
-    private static CommandHandler commandHandler;
-    private static CommandRegistry commandRegistry;
-    private static Integration pluginIntegration;
-
-    @BeforeAll
-    static void initialSetUp() {
-        commandHandler = CommandHandler.createOrGetInstance();
-        commandRegistry = CommandRegistry.getInstance();
-        pluginIntegration = new Integration("myPlugin", "me.hgsoft.minecraft.devcommand");
-    }
+    @Mock
+    private CommandRegistry commandRegistry;
+    @InjectMocks
+    private CommandHandler commandHandler;
+    private Integration pluginIntegration;
 
     @BeforeEach
     void setUp() {
+        pluginIntegration = new Integration("myPlugin", "me.hgsoft.minecraft.devcommand");
         TestCommandDevCommand.called = false;
     }
 
