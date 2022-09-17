@@ -1,19 +1,25 @@
 package me.hgsoft.minecraft.devcommand.dependencies;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.registry.dependencies.DependencyRegistry;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Singleton
 public class DependencyHandler {
 
-    private static DependencyHandler instance;
+    private final DependencyRegistry dependencyRegistry;
 
-    private DependencyHandler() { }
+    @Inject
+    public DependencyHandler(DependencyRegistry dependencyRegistry) {
+        this.dependencyRegistry = dependencyRegistry;
+    }
 
     public void registerDependency(Integration integration, Object dependency) {
-        DependencyRegistry.getInstance().add(integration, dependency);
+        dependencyRegistry.add(integration, dependency);
     }
     public void registerDependencies(Integration integration, Object... dependencies) {
         Arrays.stream(dependencies).forEach(dependency -> registerDependency(integration, dependency));
@@ -21,7 +27,6 @@ public class DependencyHandler {
 
     public Object getDependencyInstance(Integration integration, Class<?> dependencyClass) {
 
-        DependencyRegistry dependencyRegistry = DependencyRegistry.getInstance();
         List<Object> registeredDependencies = dependencyRegistry.getValues(integration);
 
         for (Object registeredDependency : registeredDependencies) {
@@ -32,13 +37,6 @@ public class DependencyHandler {
 
         return null;
 
-    }
-
-    public static DependencyHandler createOrGetInstance() {
-        if (instance == null) {
-            instance = new DependencyHandler();
-        }
-        return instance;
     }
 
 }

@@ -2,6 +2,7 @@ package me.hgsoft.minecraft.devcommand.commands;
 
 import lombok.Generated;
 import lombok.Getter;
+import me.hgsoft.minecraft.devcommand.DevCommand;
 import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import me.hgsoft.minecraft.devcommand.dependencies.DependencyHandler;
 import me.hgsoft.minecraft.devcommand.exceptions.ArgumentsConfigException;
@@ -91,7 +92,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
     @Override
     public List<Object> getDependencies() {
 
-        DependencyHandler dependencyHandler = DependencyHandler.createOrGetInstance();
+        DependencyHandler dependencyHandler = DevCommand.getOrCreateInstance().getDependencyHandler();
         Integration commandIntegration = commandData.getIntegration();
 
         return Arrays.stream(getCommandData().getDependencies())

@@ -1,14 +1,14 @@
 package me.hgsoft.minecraft.devcommand.registry.dependencies;
 
+import com.google.inject.Singleton;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.registry.IRegistry;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
+@Singleton
 public class DependencyRegistry implements IRegistry<Integration, Object> {
-
-    private static DependencyRegistry instance;
 
     private final Map<Integration, List<Object>> registeredDependencies;
 
@@ -38,13 +38,6 @@ public class DependencyRegistry implements IRegistry<Integration, Object> {
     @Override
     public void setValues(Integration key, List<Object> value) {
         registeredDependencies.put(key, value);
-    }
-
-    public static DependencyRegistry getInstance() {
-        if (instance == null) {
-            instance = new DependencyRegistry();
-        }
-        return instance;
     }
 
 }

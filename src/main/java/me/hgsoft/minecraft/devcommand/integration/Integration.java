@@ -32,6 +32,10 @@ public class Integration {
         return new Integration(getNameFromPlugin(plugin), plugin, getBasePackageFromPlugin(plugin));
     }
 
+    public boolean isValid() {
+        return basePackage != null;
+    }
+
     private static String getNameFromPlugin(JavaPlugin plugin) {
         return plugin.getName();
     }

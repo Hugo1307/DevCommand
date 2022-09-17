@@ -18,7 +18,7 @@ class CommandRegistryTest {
     @BeforeEach
     void setUp() {
         integrationStub = new Integration("myIntegration", null);
-        commandRegistry = CommandRegistry.getInstance();
+        commandRegistry = new CommandRegistry();
         bukkitCommand = new BukkitCommandDataBuilder("test", integrationStub, TestCommandDevCommand.class).build();
     }
 
