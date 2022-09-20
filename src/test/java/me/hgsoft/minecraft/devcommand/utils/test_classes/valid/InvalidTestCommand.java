@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.utils;
+package me.hgsoft.minecraft.devcommand.utils.test_classes.valid;
 
 import me.hgsoft.minecraft.devcommand.annotations.Command;
 

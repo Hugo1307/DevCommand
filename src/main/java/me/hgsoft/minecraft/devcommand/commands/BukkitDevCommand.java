@@ -33,10 +33,13 @@ public abstract class BukkitDevCommand implements IDevCommand {
 
     @Override
     public boolean hasPermissionToExecuteCommand() {
+
         if (commandData.getPermission() == null) {
             throw new PermissionConfigException(String.format("Unable to find the permission for the command %s. Have you configured any permission at all?", commandData.getName()));
         }
+
         return commandSender.hasPermission(commandData.getPermission());
+
     }
 
     @Override

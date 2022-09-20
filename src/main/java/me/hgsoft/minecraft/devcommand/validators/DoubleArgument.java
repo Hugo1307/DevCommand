@@ -13,7 +13,7 @@ public class DoubleArgument extends CommandArgument<Double> {
 
     @Override
     public boolean isValid() {
-        return getArgument().matches("\\d*\\.\\d+");
+        return getArgument().matches("[-+]?\\d*\\.\\d+");
     }
 
     @Override
