@@ -1,4 +1,4 @@
-package me.hgsoft.minecraft.devcommand.utils.arguments;
+package me.hgsoft.minecraft.devcommand.utils.test_classes.valid;
 
 import me.hgsoft.minecraft.devcommand.annotations.ArgsValidation;
 import me.hgsoft.minecraft.devcommand.annotations.Command;
@@ -9,13 +9,13 @@ import org.bukkit.command.CommandSender;
 
 @Command(alias = "test_arg", description = "Argument Test Command!", permission = "command.bukkit_test")
 @ArgsValidation(argsTypes = {IntegerArgument.class})
-public class ArgumentDevCommandTestCommand extends BukkitDevCommand {
+public class ArgumentTestCommand extends BukkitDevCommand {
 
     public static boolean called;
     public static boolean hasPermission;
     public static boolean hasValidArgs;
 
-    public ArgumentDevCommandTestCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
+    public ArgumentTestCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
         super(command, commandSender, args);
     }
 

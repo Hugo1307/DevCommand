@@ -54,31 +54,35 @@ public class CommandHandler {
 
     public void initCommandsAutoConfiguration(@NonNull Integration integration) {
 
-        if (!integration.isValid()) {
-            throw new InvalidIntegrationException(String.format("The integration %s contained an invalid base package.", integration.getName()));
-        }
+        validateIntegration(integration);
 
-        CommandDiscoveryService commandDiscoveryService = new CommandDiscoveryService(integration);
+        initCommandsAutoConfiguration(integration, new CommandDiscoveryService(integration));
 
-        List<AbstractCommandData> discoveredAbstractCommandDataList = commandDiscoveryService.getCommandExecutorClasses()
-                .stream()
-                .map(commandDiscoveryService::executorClassToCommand)
-                .collect(Collectors.toList());
+    }
 
-        boolean hasRepeatedAliases = discoveredAbstractCommandDataList.stream()
-                .map(AbstractCommandData::getAlias)
-                .distinct()
-                .count() != discoveredAbstractCommandDataList.size();
+    public void initCommandsAutoConfiguration(@NonNull Integration integration, CommandDiscoveryService commandDiscoveryService) {
 
-        if (hasRepeatedAliases) {
+        validateIntegration(integration);
+
+        if (commandDiscoveryService.containsCommandsWithRepeatedAliases()) {
             throw new AutoConfigurationException("Unable to autoconfigure commands as there are commands with repeated aliases.");
         }
 
-        discoveredAbstractCommandDataList.forEach(abstractCommand -> {
-            registerCommand(integration, abstractCommand);
-            log.info(String.format("Loaded command '%s' from '%s'.", abstractCommand.getAlias(), integration.getName()));
+        commandDiscoveryService.getDiscoveredCommandsData().forEach(abstractCommand -> {
+            if (abstractCommand != null) {
+                registerCommand(integration, abstractCommand);
+                log.info(String.format("Loaded command '%s' from '%s'.", abstractCommand.getAlias(), integration.getName()));
+            } else {
+                log.info("Failed to load at least one of the commands...");
+            }
         });
 
+    }
+
+    private void validateIntegration(Integration integration) {
+        if (!integration.isValid()) {
+            throw new InvalidIntegrationException(String.format("The integration %s contained an invalid base package.", integration.getName()));
+        }
     }
 
 }

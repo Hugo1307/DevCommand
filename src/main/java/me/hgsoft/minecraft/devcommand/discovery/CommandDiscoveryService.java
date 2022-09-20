@@ -11,6 +11,7 @@ import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.validators.CommandArgument;
 import org.reflections.Reflections;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,20 +22,31 @@ public class CommandDiscoveryService {
     private final Reflections reflectionUtils;
 
     public CommandDiscoveryService(Integration integration) {
-        this.integration = integration;
-        this.reflectionUtils = new Reflections(integration.getBasePackage());
+        this(integration, new Reflections(integration.getBasePackage()));
     }
 
-    public Set<Class<? extends IDevCommand>> getCommandExecutorClasses() {
+    public CommandDiscoveryService(Integration integration, Reflections reflectionUtils) {
+        this.integration = integration;
+        this.reflectionUtils = reflectionUtils;
+    }
+
+    public Set<Class<? extends IDevCommand>> getCommandClasses() {
         return reflectionUtils.getTypesAnnotatedWith(Command.class)
                 .stream()
                 .filter(this::containsCommandAnnotation)
                 .filter(this::isValidCommandClass)
-                .map(this::getCommandExecutor)
+                .map(this::getCommandClass)
                 .collect(Collectors.toSet());
     }
 
-    public AbstractCommandData executorClassToCommand(Class<? extends IDevCommand> commandExecutorClass) {
+    public List<AbstractCommandData> getDiscoveredCommandsData() {
+        return getCommandClasses()
+                .stream()
+                .map(this::commandClassToCommandData)
+                .collect(Collectors.toList());
+    }
+
+    public AbstractCommandData commandClassToCommandData(Class<? extends IDevCommand> commandExecutorClass) {
 
         Class<? extends CommandArgument<?>>[] argsValidationTypes = null;
         Class<?>[] commandDependencies = null;
@@ -64,6 +76,17 @@ public class CommandDiscoveryService {
 
     }
 
+    public boolean containsCommandsWithRepeatedAliases() {
+
+        List<AbstractCommandData> commandDataObjectsGenerated = getDiscoveredCommandsData();
+
+        return getDiscoveredCommandsData().stream()
+                .map(AbstractCommandData::getAlias)
+                .distinct()
+                .count() != commandDataObjectsGenerated.size();
+
+    }
+
     private Command getCommandAnnotation(Class<?> classToGetAnnotationFrom) {
         return classToGetAnnotationFrom.getAnnotation(Command.class);
     }
@@ -89,7 +112,7 @@ public class CommandDiscoveryService {
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends IDevCommand> getCommandExecutor(Class<?> classToCheck) {
+    private Class<? extends IDevCommand> getCommandClass(Class<?> classToCheck) {
         return isValidCommandClass(classToCheck) ? (Class<? extends IDevCommand>) classToCheck : null;
     }
 
