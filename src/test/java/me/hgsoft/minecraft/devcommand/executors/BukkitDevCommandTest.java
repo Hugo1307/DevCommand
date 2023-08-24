@@ -47,7 +47,7 @@ class BukkitDevCommandTest {
         String commandPermission = "commands.no_annotation_test";
 
         when(bukkitCommandDataMock.getPermission()).thenReturn(commandPermission);
-        when(commandSenderMock.hasPermission(commandPermission)).thenReturn(true);
+        when(commandSenderMock.hasPermission(commandPermission)).thenReturn(Boolean.TRUE);
 
         assertThat(bukkitDevCommandStub.hasPermissionToExecuteCommand()).isTrue();
 
@@ -63,7 +63,7 @@ class BukkitDevCommandTest {
         String commandPermission = "commands.no_annotation_test";
 
         when(bukkitCommandDataMock.getPermission()).thenReturn(commandPermission);
-        when(commandSenderMock.hasPermission(commandPermission)).thenReturn(false);
+        when(commandSenderMock.hasPermission(commandPermission)).thenReturn(Boolean.FALSE);
 
         assertThat(bukkitDevCommandStub.hasPermissionToExecuteCommand()).isFalse();
 

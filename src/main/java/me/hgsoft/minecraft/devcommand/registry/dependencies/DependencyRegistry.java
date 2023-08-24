@@ -4,7 +4,6 @@ import com.google.inject.Singleton;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import me.hgsoft.minecraft.devcommand.registry.IRegistry;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 @Singleton
@@ -12,7 +11,7 @@ public class DependencyRegistry implements IRegistry<Integration, Object> {
 
     private final Map<Integration, List<Object>> registeredDependencies;
 
-    private DependencyRegistry() {
+    public DependencyRegistry() {
         this.registeredDependencies = new HashMap<>();
     }
 
