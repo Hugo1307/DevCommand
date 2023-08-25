@@ -12,6 +12,7 @@ import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.validators.CommandArgument;
 import dev.hugog.minecraft.dev_command.validators.ICommandArgument;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +41,13 @@ public abstract class BukkitDevCommand implements IDevCommand {
 
         return commandSender.hasPermission(commandData.getPermission());
 
+    }
+
+    @Override
+    public boolean canSenderExecuteCommand() {
+        if (commandData.isPlayerOnly())
+            return commandSender instanceof Player;
+        return true;
     }
 
     @Override

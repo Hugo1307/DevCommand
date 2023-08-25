@@ -7,6 +7,7 @@ public interface IDevCommand {
     void execute();
     boolean hasPermissionToExecuteCommand();
     boolean hasValidArgs();
+    boolean canSenderExecuteCommand();
     List<Object> getDependencies();
     Object getDependency(Class<?> dependencyClass);
 

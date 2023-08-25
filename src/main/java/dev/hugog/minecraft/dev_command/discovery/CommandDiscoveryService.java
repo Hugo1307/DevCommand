@@ -64,12 +64,14 @@ public class CommandDiscoveryService {
         Command executorCommandAnnotation = getCommandAnnotation(commandExecutorClass);
 
         String commandAlias = executorCommandAnnotation.alias();
-        String commandDescription = executorCommandAnnotation.description().equals("") ? null : executorCommandAnnotation.description();
-        String commandPermission = executorCommandAnnotation.permission().equals("") ? null : executorCommandAnnotation.permission();
+        String commandDescription = executorCommandAnnotation.description().isEmpty() ? null : executorCommandAnnotation.description();
+        String commandPermission = executorCommandAnnotation.permission().isEmpty() ? null : executorCommandAnnotation.permission();
+        boolean isPlayerOnly = executorCommandAnnotation.isPlayerOnly();
 
         return new BukkitCommandDataBuilder(commandAlias, integration, commandExecutorClass)
                 .withDescription(commandDescription)
                 .withPermission(commandPermission)
+                .withPlayerOnly(isPlayerOnly)
                 .withMandatoryArguments(argsValidationTypes)
                 .withDependencies(commandDependencies)
                 .build();

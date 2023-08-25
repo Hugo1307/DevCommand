@@ -100,7 +100,7 @@ class CommandHandlerTest {
 
         when(commandRegistryMock.getValues(integrationMock)).thenReturn(List.of(bukkitCommandStub));
 
-        assertTrue(commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, "good", "afternoon"));
+        assertTrue(commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, new String[] {"good", "afternoon" } ));
 
         verify(commandRegistryMock, times(1)).getValues(integrationMock);
 

@@ -14,6 +14,7 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
     private Class<? extends IDevCommand> executor;
     private Class<?>[] dependencies;
     private String permission;
+    private boolean isPlayerOnly;
     private Class<? extends CommandArgument<?>>[] mandatoryArguments;
     private Class<? extends CommandArgument<?>>[] optionalArguments;
 
@@ -74,8 +75,13 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
         return this;
     }
 
+    public final BukkitCommandDataBuilder withPlayerOnly(boolean isPlayerOnly) {
+        this.isPlayerOnly = isPlayerOnly;
+        return this;
+    }
+
     public BukkitCommandData build() {
-        return new BukkitCommandData(name, alias, description, integration, dependencies, executor, permission, mandatoryArguments, optionalArguments);
+        return new BukkitCommandData(name, alias, description, integration, dependencies, executor, permission, isPlayerOnly, mandatoryArguments, optionalArguments);
     }
 
 }

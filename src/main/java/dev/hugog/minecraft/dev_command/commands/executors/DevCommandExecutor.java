@@ -41,7 +41,7 @@ public final class DevCommandExecutor implements CommandExecutor {
             commandHandler.executeCommandByAlias(integration, args[0], commandSender);
             return true;
         } else {
-            commandHandler.executeCommandByAlias(integration, args[0], commandSender, Arrays.copyOfRange(args, 1, args.length));
+            commandHandler.executeCommandByAlias(integration, args[0], commandSender, Arrays.copyOfRange(args, 1, args.length, String[].class));
             return true;
         }
 

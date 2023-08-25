@@ -9,6 +9,7 @@ import dev.hugog.minecraft.dev_command.validators.DoubleArgument;
 import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
 import dev.hugog.minecraft.dev_command.validators.StringArgument;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,41 @@ class BukkitDevCommandTest {
 
         verify(bukkitCommandDataMock, times(1)).getPermission();
         verify(commandSenderMock, never()).hasPermission(anyString());
+
+    }
+
+    @Test
+    @DisplayName("Test the canExecuteCommand method when the command is player only and the sender is a player.")
+    void canExecuteCommand() {
+
+        Player playerMock = mock(Player.class);
+        bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, playerMock, null) {
+            @Override
+            public void execute() {
+                System.out.println("Command Executed");
+            }
+        };
+
+        when(bukkitCommandDataMock.isPlayerOnly()).thenReturn(true);
+        assertThat(bukkitDevCommandStub.canSenderExecuteCommand()).isTrue();
+
+    }
+
+    @Test
+    @DisplayName("Test the canExecuteCommand method when the command is not player only and the sender is not a player.")
+    void canExecuteCommand_withoutPlayerOnlyFlag() {
+
+        when(bukkitCommandDataMock.isPlayerOnly()).thenReturn(false);
+        assertThat(bukkitDevCommandStub.canSenderExecuteCommand()).isTrue();
+
+    }
+
+    @Test
+    @DisplayName("Test the canExecuteCommand method when the command player only and the sender is not a player.")
+    void canExecuteCommand__withPlayerOnlyFlag() {
+
+        when(bukkitCommandDataMock.isPlayerOnly()).thenReturn(true);
+        assertThat(bukkitDevCommandStub.canSenderExecuteCommand()).isFalse();
 
     }
 

@@ -13,12 +13,14 @@ import dev.hugog.minecraft.dev_command.validators.CommandArgument;
 public class BukkitCommandData extends AbstractCommandData {
 
     private final String permission;
+    private final boolean isPlayerOnly;
     private final Class<? extends CommandArgument<?>>[] mandatoryArguments;
     private final Class<? extends CommandArgument<?>>[] optionalArguments;
 
-    public BukkitCommandData(String name, String alias, String description, Integration integration, Class<?>[] dependencies, Class<? extends IDevCommand> executor, String permission, Class<? extends CommandArgument<?>>[] mandatoryArguments, Class<? extends CommandArgument<?>>[] optionalArguments) {
+    public BukkitCommandData(String name, String alias, String description, Integration integration, Class<?>[] dependencies, Class<? extends IDevCommand> executor, String permission, boolean isPlayerOnly, Class<? extends CommandArgument<?>>[] mandatoryArguments, Class<? extends CommandArgument<?>>[] optionalArguments) {
         super(name, alias, description, integration, executor, dependencies);
         this.permission = permission;
+        this.isPlayerOnly = isPlayerOnly;
         this.mandatoryArguments = mandatoryArguments;
         this.optionalArguments = optionalArguments;
     }

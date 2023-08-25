@@ -6,7 +6,6 @@ import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 
 public class CommandFactory implements IObjectFactory<IDevCommand, AbstractCommandData> {
 
@@ -29,7 +28,8 @@ public class CommandFactory implements IObjectFactory<IDevCommand, AbstractComma
 
             if (abstractCommandData instanceof BukkitCommandData) {
                 executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
-                executorInstance = executorConstructor.newInstance(abstractCommandData, executorArgs[0], Arrays.copyOfRange(executorArgs, 1, executorArgs.length, String[].class));
+                String[] remainingArgs = (String[]) executorArgs[1];
+                executorInstance = executorConstructor.newInstance(abstractCommandData, executorArgs[0], remainingArgs);
             } else {
                 executorInstance = null;
             }
