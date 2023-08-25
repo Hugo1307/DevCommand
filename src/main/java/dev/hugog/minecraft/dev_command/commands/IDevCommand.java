@@ -8,5 +8,6 @@ public interface IDevCommand {
     boolean hasPermissionToExecuteCommand();
     boolean hasValidArgs();
     List<Object> getDependencies();
+    Object getDependency(Class<?> dependencyClass);
 
 }

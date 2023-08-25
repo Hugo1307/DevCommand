@@ -61,6 +61,11 @@ public abstract class BukkitDevCommand implements IDevCommand {
         for (int mandatoryArgumentIdx = 0; mandatoryArgumentIdx < mandatoryArguments.length; mandatoryArgumentIdx++) {
 
             String currentArgument = mandatoryArguments[mandatoryArgumentIdx];
+
+            if (commandData.getMandatoryArguments() == null) {
+                continue;
+            }
+
             Class<? extends CommandArgument<?>> expectedCommandArgumentClass = commandData.getMandatoryArguments()[mandatoryArgumentIdx];
             ICommandArgument<?> expectedCommandArgument = new ArgumentFactory(currentArgument).generate(expectedCommandArgumentClass);
 
@@ -102,6 +107,12 @@ public abstract class BukkitDevCommand implements IDevCommand {
                 .map(dependencyClass -> dependencyHandler.getDependencyInstance(commandIntegration, dependencyClass))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public Object getDependency(Class<?> dependencyClass) {
+        DependencyHandler dependencyHandler = DevCommand.getOrCreateInstance().getDependencyHandler();
+        return dependencyHandler.getDependencyInstance(commandData.getIntegration(), dependencyClass);
     }
 
 }
