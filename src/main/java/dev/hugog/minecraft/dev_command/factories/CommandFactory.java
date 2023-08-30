@@ -28,8 +28,23 @@ public class CommandFactory implements IObjectFactory<IDevCommand, AbstractComma
 
             if (abstractCommandData instanceof BukkitCommandData) {
                 executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
-                String[] remainingArgs = (String[]) executorArgs[1];
+
+                if (executorArgs.length == 0) {
+                    throw new IllegalArgumentException("You must provide a CommandSender and a String[] as arguments for the BukkitCommandData executor.");
+                }
+
+                if (executorArgs[0] != null && !(executorArgs[0] instanceof CommandSender)) {
+                    throw new IllegalArgumentException("The first argument for the BukkitCommandData executor must be a CommandSender.");
+                }
+
+                String[] remainingArgs = new String[0];
+
+                if (executorArgs.length > 1) {
+                    remainingArgs = (String[]) executorArgs[1];
+                }
+
                 executorInstance = executorConstructor.newInstance(abstractCommandData, executorArgs[0], remainingArgs);
+
             } else {
                 executorInstance = null;
             }
