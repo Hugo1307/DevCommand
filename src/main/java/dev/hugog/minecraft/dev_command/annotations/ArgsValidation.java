@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ArgsValidation {
-    Class<? extends CommandArgument<?>>[] argsTypes();
-    int mandatory() default 0;
+    Class<? extends CommandArgument<?>>[] mandatoryArgs() default {};
+    Class<? extends CommandArgument<?>>[] optionalArgs() default {};
 
 }

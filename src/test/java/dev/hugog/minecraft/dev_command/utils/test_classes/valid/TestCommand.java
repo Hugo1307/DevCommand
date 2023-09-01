@@ -8,7 +8,7 @@ import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
 import org.bukkit.command.CommandSender;
 
 @Command(alias = "test", description = "Bukkit Test Command!", permission = "command.bukkit_test")
-@ArgsValidation(argsTypes = {IntegerArgument.class})
+@ArgsValidation(mandatoryArgs = {IntegerArgument.class})
 public class TestCommand extends BukkitDevCommand {
 
     public static boolean called;

@@ -1,13 +1,12 @@
 package dev.hugog.minecraft.dev_command.discovery;
 
+import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.utils.test_classes.invalid.TestCommandCopy;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.ArgumentTestCommand;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.NoAnnotationTestCommand;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.TestCommand;
-import dev.hugog.minecraft.dev_command.annotations.Command;
-import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,17 +18,14 @@ import org.reflections.Reflections;
 
 import java.util.Set;
 
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CommandDiscoveryServiceTest {
 
     @Mock
     private Reflections reflectionsUtilsMock;
-
-    @Mock
-    private Integration integrationMock;
 
     @InjectMocks
     private CommandDiscoveryService commandDiscoveryService;
@@ -104,7 +100,7 @@ class CommandDiscoveryServiceTest {
         assertThat(commandDiscoveryService.getDiscoveredCommandsData())
                 .first()
                 .isInstanceOfSatisfying(BukkitCommandData.class, bukkitCommandData ->
-                        assertThat(bukkitCommandData).extracting(BukkitCommandData::getOptionalArguments).isNull()
+                        assertThat(bukkitCommandData.getOptionalArguments()).isEmpty()
                 );
 
     }
@@ -149,7 +145,7 @@ class CommandDiscoveryServiceTest {
 
         assertThat(commandDiscoveryService.commandClassToCommandData(TestCommand.class))
                 .isInstanceOfSatisfying(BukkitCommandData.class, bukkitCommandData ->
-                        assertThat(bukkitCommandData).extracting(BukkitCommandData::getOptionalArguments).isNull()
+                        assertThat(bukkitCommandData.getOptionalArguments()).isEmpty()
                 );
 
     }

@@ -48,12 +48,14 @@ public class CommandDiscoveryService {
 
     public AbstractCommandData commandClassToCommandData(Class<? extends IDevCommand> commandExecutorClass) {
 
-        Class<? extends CommandArgument<?>>[] argsValidationTypes = null;
+        Class<? extends CommandArgument<?>>[] mandatoryArgsValidationTypes = null;
+        Class<? extends CommandArgument<?>>[] optionalArgsValidationTypes = null;
         Class<?>[] commandDependencies = null;
 
         if (containsArgsValidator(commandExecutorClass)) {
             ArgsValidation executorArgsValidationAnnotation = getArgsValidationAnnotation(commandExecutorClass);
-            argsValidationTypes = executorArgsValidationAnnotation.argsTypes();
+            mandatoryArgsValidationTypes = executorArgsValidationAnnotation.mandatoryArgs();
+            optionalArgsValidationTypes = executorArgsValidationAnnotation.optionalArgs();
         }
 
         if (containsDependenciesAnnotation(commandExecutorClass)) {
@@ -72,7 +74,8 @@ public class CommandDiscoveryService {
                 .withDescription(commandDescription)
                 .withPermission(commandPermission)
                 .withPlayerOnly(isPlayerOnly)
-                .withMandatoryArguments(argsValidationTypes)
+                .withMandatoryArguments(mandatoryArgsValidationTypes)
+                .withOptionalArguments(optionalArgsValidationTypes)
                 .withDependencies(commandDependencies)
                 .build();
 
