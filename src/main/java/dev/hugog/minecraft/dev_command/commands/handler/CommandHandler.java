@@ -3,17 +3,17 @@ package dev.hugog.minecraft.dev_command.commands.handler;
 import com.google.inject.Inject;
 import dev.hugog.minecraft.dev_command.commands.IDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
 import dev.hugog.minecraft.dev_command.discovery.CommandDiscoveryService;
 import dev.hugog.minecraft.dev_command.exceptions.AutoConfigurationException;
 import dev.hugog.minecraft.dev_command.exceptions.InvalidIntegrationException;
-import dev.hugog.minecraft.dev_command.factories.IObjectFactory;
 import dev.hugog.minecraft.dev_command.factories.CommandFactory;
+import dev.hugog.minecraft.dev_command.factories.IObjectFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
 
-import java.util.*;
+import java.util.List;
 
 @Log4j2
 public class CommandHandler {
@@ -76,6 +76,10 @@ public class CommandHandler {
             }
         });
 
+    }
+
+    public List<AbstractCommandData> getRegisteredCommands(Integration integration) {
+        return commandRegistry.getValues(integration);
     }
 
     private void validateIntegration(Integration integration) {

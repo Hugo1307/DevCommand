@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("all")
 class IntegrationTestIT {
 
     private CommandRegistry commandRegistry;
@@ -24,7 +23,7 @@ class IntegrationTestIT {
     void setUp() {
         commandRegistry = new CommandRegistry();
         commandHandler = new CommandHandler(commandRegistry);
-        pluginIntegration = new Integration("myPlugin", "me.hgsoft.minecraft.devcommand.utils.test_classes.valid");
+        pluginIntegration = new Integration("myPlugin", "dev.hugog.minecraft.dev_command.utils.test_classes.valid");
         TestCommand.called = false;
     }
 
@@ -46,7 +45,7 @@ class IntegrationTestIT {
                 .build();
 
         commandHandler.registerCommand(pluginIntegration, bukkitCommand);
-        commandHandler.executeCommandByAlias(pluginIntegration, "test", null, "1");
+        commandHandler.executeCommandByAlias(pluginIntegration, "test", null, new String[] {"1"});
 
         // The command was successfully called
         assertTrue(TestCommand.called);
@@ -64,7 +63,7 @@ class IntegrationTestIT {
     void autoCommandDiscoveryAndExecuteBukkitCommand() {
 
         commandHandler.initCommandsAutoConfiguration(pluginIntegration);
-        commandHandler.executeCommandByAlias(pluginIntegration, "test", null, "good", "afternoon");
+        commandHandler.executeCommandByAlias(pluginIntegration, "test", null, new String[]{"good", "afternoon"});
 
         // The command was successfully called
         assertTrue(TestCommand.called);

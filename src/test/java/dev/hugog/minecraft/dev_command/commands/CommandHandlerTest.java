@@ -146,4 +146,18 @@ class CommandHandlerTest {
 
     }
 
+    @Test
+    @DisplayName("Test method to get registered commands.")
+    void getRegisteredCommands() {
+
+        when(commandRegistryMock.getValues(integrationMock)).thenReturn(List.of(bukkitCommandStub));
+
+        commandHandler.registerCommand(integrationMock, bukkitCommandStub);
+
+        assertEquals(commandHandler.getRegisteredCommands(integrationMock), List.of(bukkitCommandStub));
+
+        verify(commandRegistryMock, times(1)).getValues(integrationMock);
+
+    }
+
 }
