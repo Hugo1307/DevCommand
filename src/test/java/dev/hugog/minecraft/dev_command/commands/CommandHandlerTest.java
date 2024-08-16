@@ -70,7 +70,7 @@ class CommandHandlerTest {
 
         when(commandRegistryMock.getValues(integrationMock)).thenReturn(null);
 
-        boolean commandExecuted = commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, null);
+        boolean commandExecuted = commandHandler.executeCommand(integrationMock, new String[]{bukkitCommandStub.getAlias()}, (Object) null);
 
         assertFalse(commandExecuted);
 
@@ -87,7 +87,7 @@ class CommandHandlerTest {
         when(commandRegistryMock.getValues(integrationMock)).thenReturn(List.of(abstractCommandDataMock));
         when(abstractCommandDataMock.getAlias()).thenReturn("not_registered_alias");
 
-        assertFalse(commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, null));
+        assertFalse(commandHandler.executeCommand(integrationMock, new String[]{bukkitCommandStub.getAlias()}, (Object) null));
 
         verify(commandRegistryMock, times(1)).getValues(integrationMock);
 
@@ -101,7 +101,7 @@ class CommandHandlerTest {
 
         when(commandRegistryMock.getValues(integrationMock)).thenReturn(List.of(bukkitCommandStub));
 
-        assertTrue(commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, new String[] {"good", "afternoon" } ));
+        assertTrue(commandHandler.executeCommand(integrationMock, new String[]{bukkitCommandStub.getAlias()}, (Object) null));
 
         verify(commandRegistryMock, times(1)).getValues(integrationMock);
 

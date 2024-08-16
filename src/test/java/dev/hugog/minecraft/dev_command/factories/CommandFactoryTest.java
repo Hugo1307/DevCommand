@@ -24,7 +24,7 @@ class CommandFactoryTest {
 
     @BeforeEach
     void setUp() {
-        bukkitCommandFactory = new CommandFactory(null, new String[] {"good", "afternoon"});
+        bukkitCommandFactory = new CommandFactory(new String[] {"test", "good", "afternoon"}, (Object) null);
         bukkitCommand = new BukkitCommandDataBuilder("test", integrationMock, TestCommand.class)
                 .withName("Test Command")
                 .withDescription("Bukkit Test Command")

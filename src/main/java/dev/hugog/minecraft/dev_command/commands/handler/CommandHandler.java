@@ -13,6 +13,7 @@ import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Log4j2
@@ -29,9 +30,8 @@ public class CommandHandler {
         commandRegistry.add(integration, command);
     }
 
-    public boolean executeCommandByAlias(Integration integration, String alias, Object... commandArgs) {
+    public boolean executeCommand(Integration integration, String[] arguments, Object... extraData) {
 
-        IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArgs);
         List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
 
         if (registeredCommandsForIntegration == null) {
@@ -40,7 +40,23 @@ public class CommandHandler {
 
         for (AbstractCommandData registeredCommand : registeredCommandsForIntegration) {
 
-            if (registeredCommand.getAlias().equalsIgnoreCase(alias)) {
+            String[] alias = registeredCommand.getAlias().split(" ");
+            int aliasLength = alias.length;
+
+            if (arguments.length < aliasLength) {
+                continue;
+            }
+
+            boolean isAlias = true;
+            for (int argumentIdx = 0; argumentIdx < aliasLength; argumentIdx++) {
+                if (!arguments[argumentIdx].equalsIgnoreCase(alias[argumentIdx])) {
+                    isAlias = false;
+                    break;
+                }
+            }
+
+            if (isAlias) {
+                IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(Arrays.copyOfRange(arguments, aliasLength, arguments.length), extraData);
                 commandFactory.generate(registeredCommand).execute();
                 return true;
             }

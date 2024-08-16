@@ -2,12 +2,13 @@ package dev.hugog.minecraft.dev_command;
 
 import dev.hugog.minecraft.dev_command.commands.builder.BukkitCommandDataBuilder;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.utils.test_classes.valid.CompoundedAliasCommand;
+import dev.hugog.minecraft.dev_command.utils.test_classes.valid.EmptyAliasCommand;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.TestCommand;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +46,7 @@ class IntegrationTestIT {
                 .build();
 
         commandHandler.registerCommand(pluginIntegration, bukkitCommand);
-        commandHandler.executeCommandByAlias(pluginIntegration, "test", null, new String[] {"1"});
+        commandHandler.executeCommand(pluginIntegration, new String[]{"test", "1"}, (Object) null);
 
         // The command was successfully called
         assertTrue(TestCommand.called);
@@ -55,7 +56,7 @@ class IntegrationTestIT {
         // The args are also correct
         assertArrayEquals(new String[] {"1"}, TestCommand.args);
 
-        Assertions.assertEquals(bukkitCommand, TestCommand.command);
+        assertEquals(bukkitCommand, TestCommand.command);
 
     }
 
@@ -63,7 +64,7 @@ class IntegrationTestIT {
     void autoCommandDiscoveryAndExecuteBukkitCommand() {
 
         commandHandler.initCommandsAutoConfiguration(pluginIntegration);
-        commandHandler.executeCommandByAlias(pluginIntegration, "test", null, new String[]{"good", "afternoon"});
+        commandHandler.executeCommand(pluginIntegration, new String[]{"test", "good", "afternoon"}, (Object) null);
 
         // The command was successfully called
         assertTrue(TestCommand.called);
@@ -75,8 +76,38 @@ class IntegrationTestIT {
 
         // The command alias is also correct
         assertNotNull(TestCommand.command);
-        Assertions.assertEquals(TestCommand.command.getAlias(), "test");
+        assertEquals(TestCommand.command.getAlias(), "test");
 
+    }
+
+    @Test
+    void autoDiscovery_And_ExecuteBukkitCommandWithEmptyAlias() {
+        commandHandler.initCommandsAutoConfiguration(pluginIntegration);
+        commandHandler.executeCommand(pluginIntegration, new String[]{"", "good", "afternoon"}, (Object) null);
+
+        assertTrue(EmptyAliasCommand.called);
+        assertNull(EmptyAliasCommand.sender);
+
+        assertArrayEquals(new String[] {"good", "afternoon"}, EmptyAliasCommand.args);
+
+        assertNotNull(EmptyAliasCommand.command);
+
+        assertEquals(EmptyAliasCommand.command.getAlias(), "");
+    }
+
+    @Test
+    void autoDiscovery_And_ExecuteBukkitCommandWithMultipleAlias() {
+        commandHandler.initCommandsAutoConfiguration(pluginIntegration);
+        commandHandler.executeCommand(pluginIntegration, new String[]{"multiple", "aliases", "good", "afternoon"}, (Object) null);
+
+        assertTrue(CompoundedAliasCommand.called);
+        assertNull(CompoundedAliasCommand.sender);
+
+        assertArrayEquals(new String[] {"good", "afternoon"}, CompoundedAliasCommand.args);
+
+        assertNotNull(CompoundedAliasCommand.command);
+
+        assertEquals(CompoundedAliasCommand.command.getAlias(), "multiple aliases");
     }
 
 }

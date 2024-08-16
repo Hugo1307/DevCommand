@@ -9,10 +9,12 @@ import java.lang.reflect.Constructor;
 
 public class CommandFactory implements IObjectFactory<IDevCommand, AbstractCommandData> {
 
-    private final Object[] executorArgs;
+    private final String[] args;
+    private final Object[] extraData;
 
-    public CommandFactory(Object... executorArgs) {
-        this.executorArgs = executorArgs;
+    public CommandFactory(String[] args, Object... extraData) {
+        this.args = args;
+        this.extraData = extraData;
     }
 
     @Override
@@ -29,21 +31,16 @@ public class CommandFactory implements IObjectFactory<IDevCommand, AbstractComma
             if (abstractCommandData instanceof BukkitCommandData) {
                 executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
 
-                if (executorArgs.length == 0) {
-                    throw new IllegalArgumentException("You must provide a CommandSender and a String[] as arguments for the BukkitCommandData executor.");
+                if (extraData.length == 0) {
+                    throw new IllegalArgumentException("You must provide at least a CommandSender as arguments for the BukkitCommandData executor.");
                 }
 
-                if (executorArgs[0] != null && !(executorArgs[0] instanceof CommandSender)) {
+                if (extraData[0] != null && !(extraData[0] instanceof CommandSender)) {
                     throw new IllegalArgumentException("The first argument for the BukkitCommandData executor must be a CommandSender.");
                 }
 
-                String[] remainingArgs = new String[0];
-
-                if (executorArgs.length > 1) {
-                    remainingArgs = (String[]) executorArgs[1];
-                }
-
-                executorInstance = executorConstructor.newInstance(abstractCommandData, executorArgs[0], remainingArgs);
+                CommandSender commandSender = (CommandSender) extraData[0];
+                executorInstance = executorConstructor.newInstance(abstractCommandData, commandSender, args);
 
             } else {
                 executorInstance = null;
