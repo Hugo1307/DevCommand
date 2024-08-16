@@ -1,14 +1,14 @@
-package dev.hugog.minecraft.dev_command.executors;
+package dev.hugog.minecraft.dev_command.commands;
 
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
-import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.exceptions.ArgumentsConfigException;
+import dev.hugog.minecraft.dev_command.exceptions.InvalidArgumentsException;
 import dev.hugog.minecraft.dev_command.exceptions.PermissionConfigException;
-import dev.hugog.minecraft.dev_command.arguments.validators.BooleanArgumentValidator;
-import dev.hugog.minecraft.dev_command.arguments.validators.DoubleArgumentValidator;
-import dev.hugog.minecraft.dev_command.arguments.validators.IntegerArgumentValidator;
-import dev.hugog.minecraft.dev_command.arguments.validators.StringArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.parsers.BooleanArgumentParser;
+import dev.hugog.minecraft.dev_command.arguments.parsers.DoubleArgumentParser;
+import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
+import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -135,8 +135,8 @@ class BukkitDevCommandTest {
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("number", "Number to test", 0, IntegerArgumentValidator.class, false),
-            new CommandArgument("string", "String to test", 1, StringArgumentValidator.class, false)}
+            new CommandArgument("number", "Number to test", 0, IntegerArgumentParser.class, false),
+            new CommandArgument("string", "String to test", 1, StringArgumentParser.class, false)}
         );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
@@ -155,16 +155,16 @@ class BukkitDevCommandTest {
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("number", "Number to test", 0, IntegerArgumentValidator.class, false),
-            new CommandArgument("double", "Double to test", 1, DoubleArgumentValidator.class, false)}
+            new CommandArgument("number", "Number to test", 0, IntegerArgumentParser.class, false),
+            new CommandArgument("double", "Double to test", 1, DoubleArgumentParser.class, false)}
         );
 
         // Fails cause second argument is not a double.
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("double", "Double to test", 0, DoubleArgumentValidator.class, false),
-            new CommandArgument("string", "String to test", 1, StringArgumentValidator.class, false)}
+            new CommandArgument("double", "Double to test", 0, DoubleArgumentParser.class, false),
+            new CommandArgument("string", "String to test", 1, StringArgumentParser.class, false)}
         );
 
         // Fails cause the first argument is an Integer, not a Double.
@@ -185,7 +185,7 @@ class BukkitDevCommandTest {
 
         when(bukkitCommandDataMock.getArguments())
             .thenReturn(new CommandArgument[]{
-                new CommandArgument("string", "String to test", 0, StringArgumentValidator.class, true)}
+                new CommandArgument("string", "String to test", 0, StringArgumentParser.class, true)}
             );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
@@ -205,7 +205,7 @@ class BukkitDevCommandTest {
 
         when(bukkitCommandDataMock.getArguments())
             .thenReturn(new CommandArgument[]{
-                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, true)}
+                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, true)}
             );
 
         // Fails cause the optional argument (first argument) is not an Integer - is a String
@@ -213,7 +213,7 @@ class BukkitDevCommandTest {
 
         when(bukkitCommandDataMock.getArguments())
             .thenReturn(new CommandArgument[]{
-                new CommandArgument("boolean", "Boolean to test", 0, BooleanArgumentValidator.class, true)}
+                new CommandArgument("boolean", "Boolean to test", 0, BooleanArgumentParser.class, true)}
             );
 
         // Fails cause the optional argument (first argument) is not a Boolean - is a String
@@ -234,9 +234,9 @@ class BukkitDevCommandTest {
 
         when(bukkitCommandDataMock.getArguments())
             .thenReturn(new CommandArgument[]{
-                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
-                new CommandArgument("string", "String to test", 1, StringArgumentValidator.class, false),
-                new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, true)}
+                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
+                new CommandArgument("string", "String to test", 1, StringArgumentParser.class, false),
+                new CommandArgument("double", "Double to test", 2, DoubleArgumentParser.class, true)}
             );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
@@ -256,9 +256,9 @@ class BukkitDevCommandTest {
 
         when(bukkitCommandDataMock.getArguments())
             .thenReturn(new CommandArgument[]{
-                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
-                new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentValidator.class, false),
-                new CommandArgument("boolean", "Boolean to test", 2, BooleanArgumentValidator.class, true)}
+                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
+                new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
+                new CommandArgument("boolean", "Boolean to test", 2, BooleanArgumentParser.class, true)}
             );
 
         // Fails cause although the mandatory arguments are valid the optional arguments are not valid.
@@ -266,9 +266,9 @@ class BukkitDevCommandTest {
 
         when(bukkitCommandDataMock.getArguments())
             .thenReturn(new CommandArgument[]{
-                new CommandArgument("string", "String to test", 0, StringArgumentValidator.class, false),
-                new CommandArgument("integer", "Integer to test", 1, IntegerArgumentValidator.class, false),
-                new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, true)}
+                new CommandArgument("string", "String to test", 0, StringArgumentParser.class, false),
+                new CommandArgument("integer", "Integer to test", 1, IntegerArgumentParser.class, false),
+                new CommandArgument("double", "Double to test", 2, DoubleArgumentParser.class, true)}
             );
 
         // Fails cause although the optional arguments are valid the mandatory arguments are not valid
@@ -289,10 +289,10 @@ class BukkitDevCommandTest {
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
-            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentValidator.class, false),
-            new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, false),
-            new CommandArgument("double", "Double to test", 3, DoubleArgumentValidator.class, false)}
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
+            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
+            new CommandArgument("double", "Double to test", 2, DoubleArgumentParser.class, false),
+            new CommandArgument("double", "Double to test", 3, DoubleArgumentParser.class, false)}
         );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
@@ -312,9 +312,9 @@ class BukkitDevCommandTest {
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
-            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentValidator.class, false),
-            new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, true)}
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
+            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
+            new CommandArgument("double", "Double to test", 2, DoubleArgumentParser.class, true)}
         );
 
         // The argument validation passes cause the argument missing is optional
@@ -322,6 +322,55 @@ class BukkitDevCommandTest {
 
     }
 
+    @Test
+    @DisplayName("Test parseArguments() method with valid arguments.")
+    void parseArguments() {
+
+        String[] arguments = new String[] {"-78","yes",".22", "-0.44"};
+        bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, arguments) {
+            @Override
+            public void execute() {
+                System.out.println("Command Executed");
+            }
+        };
+
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
+            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
+            new CommandArgument("double", "Double to test", 2, DoubleArgumentParser.class, false),
+            new CommandArgument("double", "Double to test", 3, DoubleArgumentParser.class, false)}
+        );
+
+        assertDoesNotThrow(() -> bukkitDevCommandStub.parseArguments());
+        assertThat(bukkitDevCommandStub.parseArguments())
+                .isNotNull()
+                .hasSize(4)
+                .hasExactlyElementsOfTypes(IntegerArgumentParser.class, BooleanArgumentParser.class, DoubleArgumentParser.class, DoubleArgumentParser.class);
+
+    }
+
+    @Test
+    @DisplayName("Test parseArguments() method with invalid arguments.")
+    void parseArguments_Invalid() {
+
+        String[] arguments = new String[] {"-78","yes",".22", "-0.44"};
+        bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, arguments) {
+            @Override
+            public void execute() {
+                System.out.println("Command Executed");
+            }
+        };
+
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
+            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
+            new CommandArgument("integer", "Integer to test", 2, IntegerArgumentParser.class, false)}
+        );
+
+        assertFalse(bukkitDevCommandStub.hasValidArgs());
+        assertThrows(InvalidArgumentsException.class, () -> bukkitDevCommandStub.parseArguments());
+
+    }
 
     @Test
     @DisplayName("Test for call of argument validation without configuration.")

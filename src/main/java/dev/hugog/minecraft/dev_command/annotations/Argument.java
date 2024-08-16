@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.dev_command.annotations;
 
-import dev.hugog.minecraft.dev_command.arguments.validators.CommandArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.parsers.CommandArgumentParser;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
@@ -13,6 +13,6 @@ public @interface Argument {
     String name() default "";
     String description() default "";
     int position();
-    Class<? extends CommandArgumentValidator<?>> validator();
+    Class<? extends CommandArgumentParser<?>> validator();
     boolean optional() default false;
 }

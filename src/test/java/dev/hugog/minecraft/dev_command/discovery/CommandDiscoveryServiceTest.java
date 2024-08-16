@@ -2,14 +2,14 @@ package dev.hugog.minecraft.dev_command.discovery;
 
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
-import dev.hugog.minecraft.dev_command.arguments.validators.StringArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.utils.test_classes.invalid.TestCommandCopy;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.ArgumentTestCommand;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.NoAnnotationTestCommand;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.TestCommand;
-import dev.hugog.minecraft.dev_command.arguments.validators.IntegerArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,8 +96,8 @@ class CommandDiscoveryServiceTest {
                                 .extracting(BukkitCommandData::getArguments)
                                 .extracting(arguments -> assertThat(arguments)
                                     .containsExactlyInAnyOrder(
-                                        new CommandArgument("string", "String to test", 0, StringArgumentValidator.class, false),
-                                        new CommandArgument("number", "Number to test", 1, IntegerArgumentValidator.class, true)
+                                        new CommandArgument("string", "String to test", 0, StringArgumentParser.class, false),
+                                        new CommandArgument("number", "Number to test", 1, IntegerArgumentParser.class, true)
                                     )
                                 ).isNotNull()
                 );
@@ -139,8 +139,8 @@ class CommandDiscoveryServiceTest {
                     .extracting(BukkitCommandData::getArguments)
                     .extracting(arguments -> assertThat(arguments)
                         .containsExactlyInAnyOrder(
-                            new CommandArgument("string", "String to test", 0, StringArgumentValidator.class, false),
-                            new CommandArgument("number", "Number to test", 1, IntegerArgumentValidator.class, true)
+                            new CommandArgument("string", "String to test", 0, StringArgumentParser.class, false),
+                            new CommandArgument("number", "Number to test", 1, IntegerArgumentParser.class, true)
                         )
                     ).isNotNull()
             );

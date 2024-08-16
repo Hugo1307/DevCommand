@@ -1,13 +1,13 @@
-package dev.hugog.minecraft.dev_command.arguments.validators;
+package dev.hugog.minecraft.dev_command.arguments.parsers;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class StringArgumentValidator extends CommandArgumentValidator<String> {
+public class StringArgumentParser extends CommandArgumentParser<String> {
 
-    public StringArgumentValidator(String argument) {
+    public StringArgumentParser(String argument) {
         super(argument);
     }
 

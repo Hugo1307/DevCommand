@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.dev_command.arguments;
 
-import dev.hugog.minecraft.dev_command.arguments.validators.CommandArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.parsers.CommandArgumentParser;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ public class CommandArgument {
     private final String name;
     private final String description;
     private final int position;
-    private final Class<? extends CommandArgumentValidator<?>> validator;
+    private final Class<? extends CommandArgumentParser<?>> validator;
     private final boolean optional;
 
     @Override

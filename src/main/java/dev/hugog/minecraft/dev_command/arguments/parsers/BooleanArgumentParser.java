@@ -1,4 +1,4 @@
-package dev.hugog.minecraft.dev_command.arguments.validators;
+package dev.hugog.minecraft.dev_command.arguments.parsers;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -7,9 +7,9 @@ import java.util.Arrays;
 
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class BooleanArgumentValidator extends CommandArgumentValidator<Boolean> {
+public class BooleanArgumentParser extends CommandArgumentParser<Boolean> {
 
-    public BooleanArgumentValidator(String argument) {
+    public BooleanArgumentParser(String argument) {
         super(argument);
     }
 

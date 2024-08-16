@@ -2,8 +2,8 @@ package dev.hugog.minecraft.dev_command.factories;
 
 import dev.hugog.minecraft.dev_command.annotations.Argument;
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
-import dev.hugog.minecraft.dev_command.arguments.validators.CommandArgumentValidator;
-import dev.hugog.minecraft.dev_command.arguments.validators.IntegerArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.parsers.CommandArgumentParser;
+import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,8 +40,8 @@ class ArgumentFactoryTest {
             }
 
             @Override
-            public Class<? extends CommandArgumentValidator<?>> validator() {
-                return IntegerArgumentValidator.class;
+            public Class<? extends CommandArgumentParser<?>> validator() {
+                return IntegerArgumentParser.class;
             }
 
             @Override
@@ -59,7 +59,7 @@ class ArgumentFactoryTest {
                 .hasFieldOrPropertyWithValue("name", "test")
                 .hasFieldOrPropertyWithValue("description", "Test Argument")
                 .hasFieldOrPropertyWithValue("position", 0)
-                .hasFieldOrPropertyWithValue("validator", IntegerArgumentValidator.class)
+                .hasFieldOrPropertyWithValue("validator", IntegerArgumentParser.class)
                 .hasFieldOrPropertyWithValue("optional", false);
     }
 

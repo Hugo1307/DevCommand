@@ -2,21 +2,20 @@ package dev.hugog.minecraft.dev_command.commands;
 
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.exceptions.InvalidArgumentsException;
+import dev.hugog.minecraft.dev_command.exceptions.InvalidDependencyException;
 import lombok.Generated;
 import lombok.Getter;
 import dev.hugog.minecraft.dev_command.DevCommand;
 import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
 import dev.hugog.minecraft.dev_command.exceptions.ArgumentsConfigException;
 import dev.hugog.minecraft.dev_command.exceptions.PermissionConfigException;
-import dev.hugog.minecraft.dev_command.factories.ArgumentValidatorFactory;
-import dev.hugog.minecraft.dev_command.integration.Integration;
-import dev.hugog.minecraft.dev_command.arguments.validators.ICommandArgumentValidator;
+import dev.hugog.minecraft.dev_command.factories.ArgumentParserFactory;
+import dev.hugog.minecraft.dev_command.arguments.parsers.ICommandArgumentParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Generated
 @Getter
@@ -76,7 +75,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
 
             // We can safely assume that the argument is present because of the check above
             String argumentAtPosition = args[argumentPosition];
-            ICommandArgumentValidator<?> expectedCommandArgument = new ArgumentValidatorFactory(argumentAtPosition)
+            ICommandArgumentParser<?> expectedCommandArgument = new ArgumentParserFactory(argumentAtPosition)
                 .generate(argument.getValidator());
 
             if (!expectedCommandArgument.isValid()) {
@@ -89,21 +88,33 @@ public abstract class BukkitDevCommand implements IDevCommand {
     }
 
     @Override
-    public List<Object> getDependencies() {
+    public ICommandArgumentParser<?>[] parseArguments() {
+        if (!hasValidArgs()) {
+            throw new InvalidArgumentsException(String.format("The arguments provided for the command %s are invalid.", commandData.getName()));
+        }
 
-        DependencyHandler dependencyHandler = DevCommand.getOrCreateInstance().getDependencyHandler();
-        Integration commandIntegration = commandData.getIntegration();
-
-        return Arrays.stream(getCommandData().getDependencies())
-                .map(dependencyClass -> dependencyHandler.getDependencyInstance(commandIntegration, dependencyClass))
-                .collect(Collectors.toList());
-
+        return Arrays.stream(commandData.getArguments())
+                .map(argument -> {
+                    int argumentPosition = argument.getPosition();
+                    if (argumentPosition >= args.length) {
+                        return null;
+                    }
+                    String argumentAtPosition = args[argumentPosition];
+                    return new ArgumentParserFactory(argumentAtPosition)
+                        .generate(argument.getValidator());
+                })
+                .toArray(ICommandArgumentParser<?>[]::new);
     }
 
     @Override
-    public Object getDependency(Class<?> dependencyClass) {
+    @SuppressWarnings("unchecked") // The cast is safe because it is of the same type as the argument class
+    public <T> T getDependency(Class<T> dependencyClass) throws InvalidDependencyException {
         DependencyHandler dependencyHandler = DevCommand.getOrCreateInstance().getDependencyHandler();
-        return dependencyHandler.getDependencyInstance(commandData.getIntegration(), dependencyClass);
+        Object dependencyInstance = dependencyHandler.getDependencyInstance(commandData.getIntegration(), dependencyClass);
+        if (dependencyInstance == null) {
+            throw new InvalidDependencyException(String.format("Unable to find a dependency of type %s for the command %s. Have you configured the dependency correctly?", dependencyClass.getName(), commandData.getName()));
+        }
+        return (T) dependencyHandler.getDependencyInstance(commandData.getIntegration(), dependencyClass);
     }
 
 }

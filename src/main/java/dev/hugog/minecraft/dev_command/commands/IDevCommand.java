@@ -1,14 +1,14 @@
 package dev.hugog.minecraft.dev_command.commands;
 
-import java.util.List;
+import dev.hugog.minecraft.dev_command.arguments.parsers.ICommandArgumentParser;
 
 public interface IDevCommand {
 
     void execute();
+    ICommandArgumentParser<?>[] parseArguments();
     boolean hasPermissionToExecuteCommand();
     boolean hasValidArgs();
     boolean canSenderExecuteCommand();
-    List<Object> getDependencies();
-    Object getDependency(Class<?> dependencyClass);
+    <T> T getDependency(Class<T> dependencyClass);
 
 }
