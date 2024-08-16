@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.dev_command.discovery;
 
-import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
+import dev.hugog.minecraft.dev_command.annotations.Arguments;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
@@ -53,10 +53,10 @@ public class CommandDiscoveryService {
         CommandArgument[] arguments = null;
         Class<?>[] commandDependencies = null;
 
-        if (containsArgsValidator(commandExecutorClass)) {
+        if (containsArguments(commandExecutorClass)) {
             ArgumentFactory argumentFactory = new ArgumentFactory();
-            ArgsValidation executorArgsValidationAnnotation = getArgsValidationAnnotation(commandExecutorClass);
-            arguments = Arrays.stream(executorArgsValidationAnnotation.value())
+            Arguments executorArgumentsAnnotation = getArgumentsAnnotation(commandExecutorClass);
+            arguments = Arrays.stream(executorArgumentsAnnotation.value())
                     .map(argumentFactory::generate)
                     .toArray(CommandArgument[]::new);
         }
@@ -98,8 +98,8 @@ public class CommandDiscoveryService {
         return classToGetAnnotationFrom.getAnnotation(Command.class);
     }
 
-    private ArgsValidation getArgsValidationAnnotation(Class<?> classToGetAnnotationFrom) {
-        return classToGetAnnotationFrom.getAnnotation(ArgsValidation.class);
+    private Arguments getArgumentsAnnotation(Class<?> classToGetAnnotationFrom) {
+        return classToGetAnnotationFrom.getAnnotation(Arguments.class);
     }
 
     private Dependencies getDependenciesAnnotation(Class<?> classToGetAnnotationFrom) {
@@ -110,8 +110,8 @@ public class CommandDiscoveryService {
         return classToCheck.isAnnotationPresent(Command.class);
     }
 
-    private boolean containsArgsValidator(Class<?> classToCheck) {
-        return classToCheck.isAnnotationPresent(ArgsValidation.class);
+    private boolean containsArguments(Class<?> classToCheck) {
+        return classToCheck.isAnnotationPresent(Arguments.class);
     }
 
     private boolean containsDependenciesAnnotation(Class<?> classToCheck) {

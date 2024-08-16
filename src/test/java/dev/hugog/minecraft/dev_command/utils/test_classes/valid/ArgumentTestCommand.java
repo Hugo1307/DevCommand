@@ -1,15 +1,15 @@
 package dev.hugog.minecraft.dev_command.utils.test_classes.valid;
 
 import dev.hugog.minecraft.dev_command.annotations.Argument;
+import dev.hugog.minecraft.dev_command.annotations.Arguments;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import org.bukkit.command.CommandSender;
 
 @Command(alias = "test_arg", description = "Argument Test Command!", permission = "command.bukkit_test")
-@ArgsValidation(value = {
+@Arguments(value = {
     @Argument(name = "string", description = "String to test", position = 0, validator = IntegerArgumentParser.class),
     @Argument(name = "number", description = "Number to test", position = 1, validator = IntegerArgumentParser.class, optional = true)
 })
