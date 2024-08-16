@@ -1,11 +1,9 @@
-package dev.hugog.minecraft.dev_command.factory;
+package dev.hugog.minecraft.dev_command.factories;
 
 import dev.hugog.minecraft.dev_command.commands.IDevCommand;
 import dev.hugog.minecraft.dev_command.commands.builder.BukkitCommandDataBuilder;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import dev.hugog.minecraft.dev_command.factories.CommandFactory;
-import dev.hugog.minecraft.dev_command.factories.IObjectFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.TestCommand;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +34,7 @@ class CommandFactoryTest {
     @Test
     void generateExecutorForBukkitCommand() {
         IDevCommand generatedBukkitCommandExecutor = bukkitCommandFactory.generate(bukkitCommand);
-        Assertions.assertTrue(generatedBukkitCommandExecutor instanceof TestCommand);
+        Assertions.assertInstanceOf(TestCommand.class, generatedBukkitCommandExecutor);
     }
 
 }

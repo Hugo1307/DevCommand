@@ -1,4 +1,4 @@
-package dev.hugog.minecraft.dev_command.validators;
+package dev.hugog.minecraft.dev_command.arguments.validators;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 @ToString
-public abstract class CommandArgument<T> implements ICommandArgument<T> {
+public abstract class CommandArgumentValidator<T> implements ICommandArgumentValidator<T> {
 
     private final String argument;
 

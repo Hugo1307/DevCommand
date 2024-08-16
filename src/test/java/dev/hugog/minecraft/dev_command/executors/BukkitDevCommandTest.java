@@ -1,13 +1,14 @@
 package dev.hugog.minecraft.dev_command.executors;
 
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.exceptions.ArgumentsConfigException;
 import dev.hugog.minecraft.dev_command.exceptions.PermissionConfigException;
-import dev.hugog.minecraft.dev_command.validators.BooleanArgument;
-import dev.hugog.minecraft.dev_command.validators.DoubleArgument;
-import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
-import dev.hugog.minecraft.dev_command.validators.StringArgument;
+import dev.hugog.minecraft.dev_command.arguments.validators.BooleanArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.validators.DoubleArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.validators.IntegerArgumentValidator;
+import dev.hugog.minecraft.dev_command.arguments.validators.StringArgumentValidator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,7 +125,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test command mandatory arguments validation.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_Mandatory() {
 
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, new String[] {"1", "hey"}) {
@@ -134,7 +134,10 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[]{IntegerArgument.class, StringArgument.class});
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("number", "Number to test", 0, IntegerArgumentValidator.class, false),
+            new CommandArgument("string", "String to test", 1, StringArgumentValidator.class, false)}
+        );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
 
@@ -142,7 +145,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test invalid mandatory arguments validation.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_Mandatory_InvalidArguments() {
 
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, new String[] {"1", "notADouble"}) {
@@ -152,12 +154,18 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[]{IntegerArgument.class, DoubleArgument.class});
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("number", "Number to test", 0, IntegerArgumentValidator.class, false),
+            new CommandArgument("double", "Double to test", 1, DoubleArgumentValidator.class, false)}
+        );
 
         // Fails cause second argument is not a double.
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[]{DoubleArgument.class, StringArgument.class});
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("double", "Double to test", 0, DoubleArgumentValidator.class, false),
+            new CommandArgument("string", "String to test", 1, StringArgumentValidator.class, false)}
+        );
 
         // Fails cause the first argument is an Integer, not a Double.
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
@@ -166,7 +174,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test validation for optional arguments.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_Optional() {
 
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, new String[] {"Some String"}) {
@@ -176,8 +183,10 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[0]);
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[]{StringArgument.class});
+        when(bukkitCommandDataMock.getArguments())
+            .thenReturn(new CommandArgument[]{
+                new CommandArgument("string", "String to test", 0, StringArgumentValidator.class, true)}
+            );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
 
@@ -185,7 +194,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test invalid optional arguments validation.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_Optional_InvalidArguments() {
 
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, new String[] {"notAInteger"}) {
@@ -195,14 +203,18 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[0]);
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[] {IntegerArgument.class});
+        when(bukkitCommandDataMock.getArguments())
+            .thenReturn(new CommandArgument[]{
+                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, true)}
+            );
 
         // Fails cause the optional argument (first argument) is not an Integer - is a String
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[0]);
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[] {BooleanArgument.class});
+        when(bukkitCommandDataMock.getArguments())
+            .thenReturn(new CommandArgument[]{
+                new CommandArgument("boolean", "Boolean to test", 0, BooleanArgumentValidator.class, true)}
+            );
 
         // Fails cause the optional argument (first argument) is not a Boolean - is a String
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
@@ -211,7 +223,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test mandatory AND optional arguments validation.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_Mandatory_And_Optional() {
 
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, new String[] {"1","mandatoryArgument","1.2"}) {
@@ -221,8 +232,12 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[] {IntegerArgument.class, StringArgument.class});
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[] {DoubleArgument.class});
+        when(bukkitCommandDataMock.getArguments())
+            .thenReturn(new CommandArgument[]{
+                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
+                new CommandArgument("string", "String to test", 1, StringArgumentValidator.class, false),
+                new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, true)}
+            );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
 
@@ -230,7 +245,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test invalid mandatory AND optional arguments validation.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_Mandatory_And_Optional_Invalid() {
 
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, new String[] {"1","true","1.2"}) {
@@ -240,14 +254,22 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[] {IntegerArgument.class, BooleanArgument.class});
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[] {BooleanArgument.class});
+        when(bukkitCommandDataMock.getArguments())
+            .thenReturn(new CommandArgument[]{
+                new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
+                new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentValidator.class, false),
+                new CommandArgument("boolean", "Boolean to test", 2, BooleanArgumentValidator.class, true)}
+            );
 
         // Fails cause although the mandatory arguments are valid the optional arguments are not valid.
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[] {DoubleArgument.class, IntegerArgument.class});
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[] {BooleanArgument.class});
+        when(bukkitCommandDataMock.getArguments())
+            .thenReturn(new CommandArgument[]{
+                new CommandArgument("string", "String to test", 0, StringArgumentValidator.class, false),
+                new CommandArgument("integer", "Integer to test", 1, IntegerArgumentValidator.class, false),
+                new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, true)}
+            );
 
         // Fails cause although the optional arguments are valid the mandatory arguments are not valid
         assertThat(bukkitDevCommandStub.hasValidArgs()).isFalse();
@@ -256,7 +278,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test argument validation for unconventional arguments.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_WeirdArguments() {
 
         String[] arguments = new String[] {"-78","yes",".22", "-0.44"};
@@ -267,7 +288,12 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[] {IntegerArgument.class, BooleanArgument.class, DoubleArgument.class, DoubleArgument.class});
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
+            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentValidator.class, false),
+            new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, false),
+            new CommandArgument("double", "Double to test", 3, DoubleArgumentValidator.class, false)}
+        );
 
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
 
@@ -275,7 +301,6 @@ class BukkitDevCommandTest {
 
     @Test
     @DisplayName("Test argument validation without optional args.")
-    @SuppressWarnings("unchecked")
     void hasValidArgs_OptionalArgs() {
 
         String[] arguments = new String[] {"-78","yes"};
@@ -286,9 +311,11 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(new Class[] {IntegerArgument.class, BooleanArgument.class});
-        // Request validation for optional argument - not present in this case
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(new Class[] {StringArgument.class});
+        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentValidator.class, false),
+            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentValidator.class, false),
+            new CommandArgument("double", "Double to test", 2, DoubleArgumentValidator.class, true)}
+        );
 
         // The argument validation passes cause the argument missing is optional
         assertThat(bukkitDevCommandStub.hasValidArgs()).isTrue();
@@ -308,12 +335,11 @@ class BukkitDevCommandTest {
             }
         };
 
-        when(bukkitCommandDataMock.getMandatoryArguments()).thenReturn(null);
-        when(bukkitCommandDataMock.getOptionalArguments()).thenReturn(null);
+        when(bukkitCommandDataMock.getArguments()).thenReturn(null);
 
         assertThrows(ArgumentsConfigException.class,
                 () -> bukkitDevCommandStub.hasValidArgs(),
-                String.format("Unable to find arguments configuration for the command %s. Have you added configured any arguments for the command?", bukkitCommandDataMock.getName()));
+                String.format("Unable to find arguments configuration for the command %s. Have you configured any arguments for the command?", bukkitCommandDataMock.getName()));
 
     }
 

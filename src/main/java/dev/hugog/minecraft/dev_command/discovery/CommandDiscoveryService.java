@@ -3,11 +3,13 @@ package dev.hugog.minecraft.dev_command.discovery;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.IDevCommand;
 import dev.hugog.minecraft.dev_command.commands.builder.BukkitCommandDataBuilder;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
+import dev.hugog.minecraft.dev_command.factories.ArgumentFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
-import dev.hugog.minecraft.dev_command.validators.CommandArgument;
+import java.util.Arrays;
 import lombok.Getter;
 import org.reflections.Reflections;
 
@@ -48,14 +50,15 @@ public class CommandDiscoveryService {
 
     public AbstractCommandData commandClassToCommandData(Class<? extends IDevCommand> commandExecutorClass) {
 
-        Class<? extends CommandArgument<?>>[] mandatoryArgsValidationTypes = null;
-        Class<? extends CommandArgument<?>>[] optionalArgsValidationTypes = null;
+        CommandArgument[] arguments = null;
         Class<?>[] commandDependencies = null;
 
         if (containsArgsValidator(commandExecutorClass)) {
+            ArgumentFactory argumentFactory = new ArgumentFactory();
             ArgsValidation executorArgsValidationAnnotation = getArgsValidationAnnotation(commandExecutorClass);
-            mandatoryArgsValidationTypes = executorArgsValidationAnnotation.mandatoryArgs();
-            optionalArgsValidationTypes = executorArgsValidationAnnotation.optionalArgs();
+            arguments = Arrays.stream(executorArgsValidationAnnotation.value())
+                    .map(argumentFactory::generate)
+                    .toArray(CommandArgument[]::new);
         }
 
         if (containsDependenciesAnnotation(commandExecutorClass)) {
@@ -74,8 +77,7 @@ public class CommandDiscoveryService {
                 .withDescription(commandDescription)
                 .withPermission(commandPermission)
                 .withPlayerOnly(isPlayerOnly)
-                .withMandatoryArguments(mandatoryArgsValidationTypes)
-                .withOptionalArguments(optionalArgsValidationTypes)
+                .withArguments(arguments)
                 .withDependencies(commandDependencies)
                 .build();
 

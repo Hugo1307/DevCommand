@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.dev_command.commands;
 
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.builder.BukkitCommandDataBuilder;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
@@ -10,7 +11,7 @@ import dev.hugog.minecraft.dev_command.exceptions.AutoConfigurationException;
 import dev.hugog.minecraft.dev_command.exceptions.InvalidIntegrationException;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
-import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
+import dev.hugog.minecraft.dev_command.arguments.validators.IntegerArgumentValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,7 @@ class CommandHandlerTest {
         bukkitCommandStub = new BukkitCommandDataBuilder("test", integrationMock, TestCommand.class)
                 .withDescription("Bukkit Test Command!")
                 .withPermission("command.bukkit_test")
-                .withMandatoryArguments(IntegerArgument.class)
+                .withArguments(new CommandArgument("string", "String to test", 0, IntegerArgumentValidator.class, false))
                 .build();
 
     }

@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.dev_command.commands;
 
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import lombok.Generated;
 import lombok.Getter;
@@ -7,10 +8,9 @@ import dev.hugog.minecraft.dev_command.DevCommand;
 import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
 import dev.hugog.minecraft.dev_command.exceptions.ArgumentsConfigException;
 import dev.hugog.minecraft.dev_command.exceptions.PermissionConfigException;
-import dev.hugog.minecraft.dev_command.factories.ArgumentFactory;
+import dev.hugog.minecraft.dev_command.factories.ArgumentValidatorFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
-import dev.hugog.minecraft.dev_command.validators.CommandArgument;
-import dev.hugog.minecraft.dev_command.validators.ICommandArgument;
+import dev.hugog.minecraft.dev_command.arguments.validators.ICommandArgumentValidator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -53,52 +53,35 @@ public abstract class BukkitDevCommand implements IDevCommand {
     @Override
     public boolean hasValidArgs() {
 
-        if (commandData.getMandatoryArguments() == null && commandData.getOptionalArguments() == null) {
-            throw new ArgumentsConfigException(String.format("Unable to find arguments configuration for the command %s. Have you added configured any arguments for the command?", commandData.getName()));
+        if (commandData.getArguments() == null) {
+            throw new ArgumentsConfigException(String.format("Unable to find arguments configuration for the command %s. Have you configured any arguments for the command?", commandData.getName()));
         }
 
-        int mandatoryArgumentsCount = commandData.getMandatoryArguments() != null ? commandData.getMandatoryArguments().length : 0;
-        int optionalArgumentsCount = commandData.getOptionalArguments() != null ? commandData.getOptionalArguments().length : 0;
+        int mandatoryArgumentsCount = Arrays.stream(commandData.getArguments())
+                .filter(commandArgument -> !commandArgument.isOptional())
+                .toArray().length;
 
         if (args.length < mandatoryArgumentsCount) {
            return false;
         }
 
-        String[] mandatoryArguments = Arrays.copyOfRange(args, 0, mandatoryArgumentsCount);
-
-        for (int mandatoryArgumentIdx = 0; mandatoryArgumentIdx < mandatoryArguments.length; mandatoryArgumentIdx++) {
-
-            String currentArgument = mandatoryArguments[mandatoryArgumentIdx];
-
-            if (commandData.getMandatoryArguments() == null) {
+        for (CommandArgument argument : commandData.getArguments()) {
+            int argumentPosition = argument.getPosition();
+            if (argumentPosition >= args.length) {
+                if (!argument.isOptional()) {
+                    return false;
+                }
                 continue;
             }
 
-            Class<? extends CommandArgument<?>> expectedCommandArgumentClass = commandData.getMandatoryArguments()[mandatoryArgumentIdx];
-            ICommandArgument<?> expectedCommandArgument = new ArgumentFactory(currentArgument).generate(expectedCommandArgumentClass);
+            // We can safely assume that the argument is present because of the check above
+            String argumentAtPosition = args[argumentPosition];
+            ICommandArgumentValidator<?> expectedCommandArgument = new ArgumentValidatorFactory(argumentAtPosition)
+                .generate(argument.getValidator());
 
             if (!expectedCommandArgument.isValid()) {
                 return false;
             }
-
-        }
-
-        String[] optionalArguments = Arrays.copyOfRange(args, mandatoryArgumentsCount, Math.min(mandatoryArgumentsCount+optionalArgumentsCount, args.length));
-
-        for (int optionalArgumentIdx = 0; optionalArgumentIdx < optionalArguments.length; optionalArgumentIdx++) {
-
-            if (optionalArgumentIdx < optionalArgumentsCount) {
-
-                String currentArgument = optionalArguments[optionalArgumentIdx];
-                Class<? extends CommandArgument<?>> expectedCommandArgumentClass = commandData.getOptionalArguments()[optionalArgumentIdx];
-                ICommandArgument<?> expectedCommandArgument = new ArgumentFactory(currentArgument).generate(expectedCommandArgumentClass);
-
-                if (!expectedCommandArgument.isValid()) {
-                    return false;
-                }
-
-            }
-
         }
 
         return true;
