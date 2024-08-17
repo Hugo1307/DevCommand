@@ -4,6 +4,7 @@ import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.exceptions.InvalidArgumentsException;
 import dev.hugog.minecraft.dev_command.exceptions.InvalidDependencyException;
+import dev.hugog.minecraft.dev_command.validation.IAutoValidationConfiguration;
 import lombok.Generated;
 import lombok.Getter;
 import dev.hugog.minecraft.dev_command.DevCommand;
@@ -88,22 +89,53 @@ public abstract class BukkitDevCommand implements IDevCommand {
     }
 
     @Override
-    public ICommandArgumentParser<?>[] parseArguments() {
+    public ICommandArgumentParser<?> getArgumentParser(int argumentPosition) {
         if (!hasValidArgs()) {
             throw new InvalidArgumentsException(String.format("The arguments provided for the command %s are invalid.", commandData.getName()));
         }
 
-        return Arrays.stream(commandData.getArguments())
-                .map(argument -> {
-                    int argumentPosition = argument.getPosition();
-                    if (argumentPosition >= args.length) {
-                        return null;
-                    }
-                    String argumentAtPosition = args[argumentPosition];
-                    return new ArgumentParserFactory(argumentAtPosition)
-                        .generate(argument.getValidator());
-                })
-                .toArray(ICommandArgumentParser<?>[]::new);
+        if (args.length <= argumentPosition) {
+            throw new InvalidArgumentsException(String.format("The argument position %d is out of bounds for the command %s.", argumentPosition, commandData.getName()));
+        }
+
+        ICommandArgumentParser<?> parser = Arrays.stream(commandData.getArguments())
+                .filter(commandArgument -> commandArgument.getPosition() == argumentPosition)
+                .findFirst()
+                .map(commandArgument -> new ArgumentParserFactory(args[argumentPosition]).generate(commandArgument.getValidator()))
+                .orElseThrow();
+
+        if (!parser.isValid()) {
+            throw new InvalidArgumentsException(String.format("The argument at position %d is invalid for the command %s.", argumentPosition, commandData.getName()));
+        }
+
+        return parser;
+    }
+
+    @Override
+    public boolean performAutoValidation(IAutoValidationConfiguration configuration) {
+        if (commandData.getAutoValidation() == null) {
+            return true;
+        }
+
+        if (commandData.getAutoValidation().validateSender()) {
+            if (commandData.isPlayerOnly() && !(getCommandSender() instanceof Player)) {
+                getCommandSender().sendMessage(configuration.getInvalidSenderMessage(this));
+                return false;
+            }
+        }
+        if (commandData.getAutoValidation().validatePermission()) {
+            if (!hasPermissionToExecuteCommand()) {
+                getCommandSender().sendMessage(configuration.getNoPermissionMessage(this));
+                return false;
+            }
+        }
+        if (commandData.getAutoValidation().validateArguments()) {
+            if (!hasValidArgs()) {
+                getCommandSender().sendMessage(configuration.getInvalidArgumentsMessage(this));
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

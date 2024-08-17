@@ -10,6 +10,8 @@ import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
 import dev.hugog.minecraft.dev_command.factories.ArgumentFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import java.util.Arrays;
+
+import dev.hugog.minecraft.dev_command.validation.AutoValidation;
 import lombok.Getter;
 import org.reflections.Reflections;
 
@@ -52,6 +54,7 @@ public class CommandDiscoveryService {
 
         CommandArgument[] arguments = null;
         Class<?>[] commandDependencies = null;
+        AutoValidation autoValidation = null;
 
         if (containsArguments(commandExecutorClass)) {
             ArgumentFactory argumentFactory = new ArgumentFactory();
@@ -64,6 +67,11 @@ public class CommandDiscoveryService {
         if (containsDependenciesAnnotation(commandExecutorClass)) {
             Dependencies dependenciesAnnotation = getDependenciesAnnotation(commandExecutorClass);
             commandDependencies = dependenciesAnnotation.dependencies();
+        }
+
+        if (containsAutoValidationAnnotation(commandExecutorClass)) {
+            dev.hugog.minecraft.dev_command.annotations.AutoValidation autoValidationAnnotation = getAutoValidationAnnotation(commandExecutorClass);
+            autoValidation = new AutoValidation(autoValidationAnnotation.permission(), autoValidationAnnotation.arguments(), autoValidationAnnotation.sender());
         }
 
         Command executorCommandAnnotation = getCommandAnnotation(commandExecutorClass);
@@ -79,6 +87,7 @@ public class CommandDiscoveryService {
                 .withPlayerOnly(isPlayerOnly)
                 .withArguments(arguments)
                 .withDependencies(commandDependencies)
+                .withAutoValidation(autoValidation)
                 .build();
 
     }
@@ -106,6 +115,10 @@ public class CommandDiscoveryService {
         return classToGetAnnotationFrom.getAnnotation(Dependencies.class);
     }
 
+    private dev.hugog.minecraft.dev_command.annotations.AutoValidation getAutoValidationAnnotation(Class<?> classToGetAnnotationFrom) {
+        return classToGetAnnotationFrom.getAnnotation(dev.hugog.minecraft.dev_command.annotations.AutoValidation.class);
+    }
+
     private boolean containsCommandAnnotation(Class<?> classToCheck) {
         return classToCheck.isAnnotationPresent(Command.class);
     }
@@ -116,6 +129,10 @@ public class CommandDiscoveryService {
 
     private boolean containsDependenciesAnnotation(Class<?> classToCheck) {
         return classToCheck.isAnnotationPresent(Dependencies.class);
+    }
+
+    private boolean containsAutoValidationAnnotation(Class<?> classToCheck) {
+        return classToCheck.isAnnotationPresent(dev.hugog.minecraft.dev_command.annotations.AutoValidation.class);
     }
 
     @SuppressWarnings("unchecked")

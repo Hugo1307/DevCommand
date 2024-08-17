@@ -10,6 +10,8 @@ import dev.hugog.minecraft.dev_command.factories.CommandFactory;
 import dev.hugog.minecraft.dev_command.factories.IObjectFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
+import dev.hugog.minecraft.dev_command.validation.DefaultAutoValidationConfiguration;
+import dev.hugog.minecraft.dev_command.validation.IAutoValidationConfiguration;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
@@ -20,10 +22,12 @@ import java.util.List;
 public class CommandHandler {
 
     private final CommandRegistry commandRegistry;
+    private IAutoValidationConfiguration autoValidationConfiguration;
 
     @Inject
     public CommandHandler(CommandRegistry commandRegistry) {
         this.commandRegistry = commandRegistry;
+        this.autoValidationConfiguration = new DefaultAutoValidationConfiguration();
     }
 
     public void registerCommand(Integration integration, AbstractCommandData command) {
@@ -57,7 +61,10 @@ public class CommandHandler {
 
             if (isAlias) {
                 IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(Arrays.copyOfRange(arguments, aliasLength, arguments.length), extraData);
-                commandFactory.generate(registeredCommand).execute();
+                IDevCommand command = commandFactory.generate(registeredCommand);
+                if (command.performAutoValidation(autoValidationConfiguration)) {
+                    command.execute();
+                }
                 return true;
             }
 
@@ -96,6 +103,10 @@ public class CommandHandler {
 
     public List<AbstractCommandData> getRegisteredCommands(Integration integration) {
         return commandRegistry.getValues(integration);
+    }
+
+    public void useAutoValidationConfiguration(IAutoValidationConfiguration configuration) {
+        this.autoValidationConfiguration = configuration;
     }
 
     private void validateIntegration(Integration integration) {

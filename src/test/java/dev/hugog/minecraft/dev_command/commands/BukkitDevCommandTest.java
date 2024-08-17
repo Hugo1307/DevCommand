@@ -323,8 +323,8 @@ class BukkitDevCommandTest {
     }
 
     @Test
-    @DisplayName("Test parseArguments() method with valid arguments.")
-    void parseArguments() {
+    @DisplayName("Test getArgumentParser() method with valid arguments.")
+    void parseArgument() {
 
         String[] arguments = new String[] {"-78","yes",".22", "-0.44"};
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, arguments) {
@@ -335,23 +335,18 @@ class BukkitDevCommandTest {
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
-            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
-            new CommandArgument("double", "Double to test", 2, DoubleArgumentParser.class, false),
-            new CommandArgument("double", "Double to test", 3, DoubleArgumentParser.class, false)}
+            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false)}
         );
 
-        assertDoesNotThrow(() -> bukkitDevCommandStub.parseArguments());
-        assertThat(bukkitDevCommandStub.parseArguments())
-                .isNotNull()
-                .hasSize(4)
-                .hasExactlyElementsOfTypes(IntegerArgumentParser.class, BooleanArgumentParser.class, DoubleArgumentParser.class, DoubleArgumentParser.class);
+        assertDoesNotThrow(() -> bukkitDevCommandStub.getArgumentParser(0));
+        assertThat(bukkitDevCommandStub.getArgumentParser(0))
+                .isNotNull();
 
     }
 
     @Test
-    @DisplayName("Test parseArguments() method with invalid arguments.")
-    void parseArguments_Invalid() {
+    @DisplayName("Test getArgumentParser() method with invalid arguments.")
+    void parseArgument_Invalid() {
 
         String[] arguments = new String[] {"-78","yes",".22", "-0.44"};
         bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, arguments) {
@@ -368,7 +363,7 @@ class BukkitDevCommandTest {
         );
 
         assertFalse(bukkitDevCommandStub.hasValidArgs());
-        assertThrows(InvalidArgumentsException.class, () -> bukkitDevCommandStub.parseArguments());
+        assertThrows(InvalidArgumentsException.class, () -> bukkitDevCommandStub.getArgumentParser(2));
 
     }
 
