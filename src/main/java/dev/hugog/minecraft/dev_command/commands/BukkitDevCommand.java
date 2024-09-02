@@ -58,7 +58,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
         }
 
         int mandatoryArgumentsCount = Arrays.stream(commandData.getArguments())
-                .filter(commandArgument -> !commandArgument.isOptional())
+                .filter(commandArgument -> !commandArgument.optional())
                 .toArray().length;
 
         if (args.length < mandatoryArgumentsCount) {
@@ -66,9 +66,9 @@ public abstract class BukkitDevCommand implements IDevCommand {
         }
 
         for (CommandArgument argument : commandData.getArguments()) {
-            int argumentPosition = argument.getPosition();
+            int argumentPosition = argument.position();
             if (argumentPosition >= args.length) {
-                if (!argument.isOptional()) {
+                if (!argument.optional()) {
                     return false;
                 }
                 continue;
@@ -77,7 +77,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
             // We can safely assume that the argument is present because of the check above
             String argumentAtPosition = args[argumentPosition];
             ICommandArgumentParser<?> expectedCommandArgument = new ArgumentParserFactory(argumentAtPosition)
-                .generate(argument.getValidator());
+                .generate(argument.validator());
 
             if (!expectedCommandArgument.isValid()) {
                 return false;
@@ -99,9 +99,9 @@ public abstract class BukkitDevCommand implements IDevCommand {
         }
 
         ICommandArgumentParser<?> parser = Arrays.stream(commandData.getArguments())
-                .filter(commandArgument -> commandArgument.getPosition() == argumentPosition)
+                .filter(commandArgument -> commandArgument.position() == argumentPosition)
                 .findFirst()
-                .map(commandArgument -> new ArgumentParserFactory(args[argumentPosition]).generate(commandArgument.getValidator()))
+                .map(commandArgument -> new ArgumentParserFactory(args[argumentPosition]).generate(commandArgument.validator()))
                 .orElseThrow();
 
         if (!parser.isValid()) {
@@ -113,23 +113,23 @@ public abstract class BukkitDevCommand implements IDevCommand {
 
     @Override
     public boolean performAutoValidation(IAutoValidationConfiguration configuration) {
-        if (commandData.getAutoValidation() == null) {
+        if (commandData.getAutoValidationData() == null) {
             return true;
         }
 
-        if (commandData.getAutoValidation().validateSender()) {
+        if (commandData.getAutoValidationData().validateSender()) {
             if (commandData.isPlayerOnly() && !(getCommandSender() instanceof Player)) {
                 getCommandSender().sendMessage(configuration.getInvalidSenderMessage(this));
                 return false;
             }
         }
-        if (commandData.getAutoValidation().validatePermission()) {
+        if (commandData.getAutoValidationData().validatePermission()) {
             if (!hasPermissionToExecuteCommand()) {
                 getCommandSender().sendMessage(configuration.getNoPermissionMessage(this));
                 return false;
             }
         }
-        if (commandData.getAutoValidation().validateArguments()) {
+        if (commandData.getAutoValidationData().validateArguments() && commandData.getArguments() != null) {
             if (!hasValidArgs()) {
                 getCommandSender().sendMessage(configuration.getInvalidArgumentsMessage(this));
                 return false;

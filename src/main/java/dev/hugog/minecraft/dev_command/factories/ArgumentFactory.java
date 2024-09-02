@@ -8,7 +8,7 @@ public class ArgumentFactory implements IObjectFactory<CommandArgument, Argument
     @Override
     public CommandArgument generate(Argument command) {
         return new CommandArgument(command.name(), command.description(), command.position(),
-                command.validator(), command.optional());
+                command.parser(), command.optional());
     }
 
 }

@@ -13,6 +13,6 @@ public @interface Argument {
     String name() default "";
     String description() default "";
     int position();
-    Class<? extends CommandArgumentParser<?>> validator();
+    Class<? extends CommandArgumentParser<?>> parser();
     boolean optional() default false;
 }

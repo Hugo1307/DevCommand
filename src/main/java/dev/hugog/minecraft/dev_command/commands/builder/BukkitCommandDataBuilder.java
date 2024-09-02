@@ -4,7 +4,7 @@ import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.commands.IDevCommand;
 import dev.hugog.minecraft.dev_command.integration.Integration;
-import dev.hugog.minecraft.dev_command.validation.AutoValidation;
+import dev.hugog.minecraft.dev_command.validation.AutoValidationData;
 
 public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDataBuilder, BukkitCommandData> {
 
@@ -17,7 +17,7 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
     private String permission;
     private boolean isPlayerOnly;
     private CommandArgument[] arguments;
-    private AutoValidation autoValidation;
+    private AutoValidationData autoValidationData;
 
     public BukkitCommandDataBuilder(String alias, Integration integration, Class<? extends IDevCommand> executor) {
         this.alias = alias;
@@ -74,14 +74,14 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
         return this;
     }
 
-    public final BukkitCommandDataBuilder withAutoValidation(AutoValidation autoValidation) {
-        this.autoValidation = autoValidation;
+    public final BukkitCommandDataBuilder withAutoValidation(AutoValidationData autoValidationData) {
+        this.autoValidationData = autoValidationData;
         return this;
     }
 
     public BukkitCommandData build() {
         return new BukkitCommandData(name, alias, description, integration, dependencies, executor, permission,
-                isPlayerOnly, arguments, autoValidation);
+                isPlayerOnly, arguments, autoValidationData);
     }
 
 }

@@ -1,6 +1,7 @@
 package dev.hugog.minecraft.dev_command.discovery;
 
 import dev.hugog.minecraft.dev_command.annotations.Arguments;
+import dev.hugog.minecraft.dev_command.annotations.AutoValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
@@ -11,7 +12,7 @@ import dev.hugog.minecraft.dev_command.factories.ArgumentFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import java.util.Arrays;
 
-import dev.hugog.minecraft.dev_command.validation.AutoValidation;
+import dev.hugog.minecraft.dev_command.validation.AutoValidationData;
 import lombok.Getter;
 import org.reflections.Reflections;
 
@@ -54,7 +55,7 @@ public class CommandDiscoveryService {
 
         CommandArgument[] arguments = null;
         Class<?>[] commandDependencies = null;
-        AutoValidation autoValidation = null;
+        AutoValidationData autoValidationData = null;
 
         if (containsArguments(commandExecutorClass)) {
             ArgumentFactory argumentFactory = new ArgumentFactory();
@@ -70,8 +71,8 @@ public class CommandDiscoveryService {
         }
 
         if (containsAutoValidationAnnotation(commandExecutorClass)) {
-            dev.hugog.minecraft.dev_command.annotations.AutoValidation autoValidationAnnotation = getAutoValidationAnnotation(commandExecutorClass);
-            autoValidation = new AutoValidation(autoValidationAnnotation.permission(), autoValidationAnnotation.arguments(), autoValidationAnnotation.sender());
+            AutoValidation autoValidationAnnotation = getAutoValidationAnnotation(commandExecutorClass);
+            autoValidationData = new AutoValidationData(autoValidationAnnotation.permission(), autoValidationAnnotation.arguments(), autoValidationAnnotation.sender());
         }
 
         Command executorCommandAnnotation = getCommandAnnotation(commandExecutorClass);
@@ -87,7 +88,7 @@ public class CommandDiscoveryService {
                 .withPlayerOnly(isPlayerOnly)
                 .withArguments(arguments)
                 .withDependencies(commandDependencies)
-                .withAutoValidation(autoValidation)
+                .withAutoValidation(autoValidationData)
                 .build();
 
     }

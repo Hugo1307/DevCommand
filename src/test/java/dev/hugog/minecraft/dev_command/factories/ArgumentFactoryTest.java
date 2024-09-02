@@ -40,7 +40,7 @@ class ArgumentFactoryTest {
             }
 
             @Override
-            public Class<? extends CommandArgumentParser<?>> validator() {
+            public Class<? extends CommandArgumentParser<?>> parser() {
                 return IntegerArgumentParser.class;
             }
 

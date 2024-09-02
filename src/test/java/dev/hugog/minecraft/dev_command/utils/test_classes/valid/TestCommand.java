@@ -11,8 +11,8 @@ import org.bukkit.command.CommandSender;
 
 @Command(alias = "test", description = "Bukkit Test Command!", permission = "command.bukkit_test")
 @Arguments(value = {
-    @Argument(name = "string", description = "String to test", position = 0, validator = StringArgumentParser.class),
-    @Argument(name = "number", description = "Number to test", position = 1, validator = IntegerArgumentParser.class, optional = true)
+    @Argument(name = "string", description = "String to test", position = 0, parser = StringArgumentParser.class),
+    @Argument(name = "number", description = "Number to test", position = 1, parser = IntegerArgumentParser.class, optional = true)
 })
 public class TestCommand extends BukkitDevCommand {
 
