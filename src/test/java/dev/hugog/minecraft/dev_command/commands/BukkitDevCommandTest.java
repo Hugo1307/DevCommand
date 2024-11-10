@@ -18,6 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -38,6 +40,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
     }
@@ -98,6 +104,10 @@ class BukkitDevCommandTest {
             public void execute() {
                 System.out.println("Command Executed");
             }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
+            }
         };
 
         when(bukkitCommandDataMock.isPlayerOnly()).thenReturn(true);
@@ -132,6 +142,10 @@ class BukkitDevCommandTest {
             public void execute() {
                 System.out.println("Command Executed");
             }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
+            }
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
@@ -151,6 +165,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
 
@@ -181,6 +199,10 @@ class BukkitDevCommandTest {
             public void execute() {
                 System.out.println("Command Executed");
             }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
+            }
         };
 
         when(bukkitCommandDataMock.getArguments())
@@ -200,6 +222,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
 
@@ -230,6 +256,10 @@ class BukkitDevCommandTest {
             public void execute() {
                 System.out.println("Command Executed");
             }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
+            }
         };
 
         when(bukkitCommandDataMock.getArguments())
@@ -251,6 +281,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
 
@@ -286,6 +320,10 @@ class BukkitDevCommandTest {
             public void execute() {
                 System.out.println("Command Executed");
             }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
+            }
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
@@ -308,6 +346,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
 
@@ -332,6 +374,10 @@ class BukkitDevCommandTest {
             public void execute() {
                 System.out.println("Command Executed");
             }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
+            }
         };
 
         when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
@@ -353,6 +399,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
 
@@ -376,6 +426,10 @@ class BukkitDevCommandTest {
             @Override
             public void execute() {
                 System.out.println("Command Executed");
+            }
+            @Override
+            public List<String> onTabComplete(String[] args) {
+                return List.of();
             }
         };
 

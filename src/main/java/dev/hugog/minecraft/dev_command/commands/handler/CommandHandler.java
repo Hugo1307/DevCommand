@@ -17,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.Arrays;
 import java.util.List;
+import org.bukkit.command.CommandSender;
 
 @Log4j2
 public class CommandHandler {
@@ -74,6 +75,43 @@ public class CommandHandler {
 
     }
 
+    public List<String> executeTabComplete(Integration integration, CommandSender commandSender, String[] arguments) {
+        List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
+
+        if (registeredCommandsForIntegration == null) {
+            return null;
+        }
+
+        for (AbstractCommandData registeredCommand : registeredCommandsForIntegration) {
+
+            String[] alias = registeredCommand.getAlias().split(" ");
+            int aliasLength = alias.length;
+
+            if (arguments.length < aliasLength) {
+                continue;
+            }
+
+            boolean isAlias = true;
+            for (int argumentIdx = 0; argumentIdx < aliasLength; argumentIdx++) {
+                if (!arguments[argumentIdx].equalsIgnoreCase(alias[argumentIdx])) {
+                    isAlias = false;
+                    break;
+                }
+            }
+
+            if (isAlias) {
+                String[] commandArguments = Arrays.copyOfRange(arguments, aliasLength, arguments.length);
+                IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArguments, commandSender);
+                IDevCommand command = commandFactory.generate(registeredCommand);
+                return command.onTabComplete(commandArguments);
+            }
+
+        }
+
+        return null;
+
+    }
+
     public void initCommandsAutoConfiguration(@NonNull Integration integration) {
 
         validateIntegration(integration);
@@ -93,7 +131,7 @@ public class CommandHandler {
         commandDiscoveryService.getDiscoveredCommandsData().forEach(abstractCommand -> {
             if (abstractCommand != null) {
                 registerCommand(integration, abstractCommand);
-                log.info(String.format("Loaded command '%s' from '%s'.", abstractCommand.getAlias(), integration.getName()));
+                log.info("Loaded command '{}' from '{}'.", abstractCommand.getAlias(), integration.getName());
             } else {
                 log.info("Failed to load at least one of the commands...");
             }

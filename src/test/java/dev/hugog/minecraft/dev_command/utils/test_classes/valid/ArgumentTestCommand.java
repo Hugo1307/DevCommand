@@ -8,6 +8,8 @@ import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 @Command(alias = "test_arg", description = "Argument Test Command!", permission = "command.bukkit_test")
 @Arguments(value = {
     @Argument(name = "string", description = "String to test", position = 0, parser = IntegerArgumentParser.class),
@@ -29,6 +31,11 @@ public class ArgumentTestCommand extends BukkitDevCommand {
         called = true;
         hasPermission = hasPermissionToExecuteCommand();
         hasValidArgs = hasValidArgs();
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] args) {
+        return List.of();
     }
 
 }

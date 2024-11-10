@@ -9,6 +9,8 @@ import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 @Command(alias = "", description = "Bukkit Empty Test Command!", permission = "command.bukkit_test")
 @Arguments(value = {
     @Argument(name = "string", description = "String to test", position = 0, parser = StringArgumentParser.class),
@@ -32,6 +34,11 @@ public class EmptyAliasCommand extends BukkitDevCommand {
         command = this.getCommandData();
         sender = getCommandSender();
         args = getArgs();
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] args) {
+        return List.of();
     }
 
 }
