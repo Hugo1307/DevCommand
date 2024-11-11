@@ -14,10 +14,10 @@ import dev.hugog.minecraft.dev_command.validation.DefaultAutoValidationConfigura
 import dev.hugog.minecraft.dev_command.validation.IAutoValidationConfiguration;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 import java.util.List;
-import org.bukkit.command.CommandSender;
 
 @Log4j2
 public class CommandHandler {
@@ -48,7 +48,14 @@ public class CommandHandler {
             String[] alias = registeredCommand.getAlias().split(" ");
             int aliasLength = alias.length;
 
-            if (arguments.length < aliasLength) {
+            if (arguments.length == 0 && registeredCommand.getAlias().isEmpty()) {
+                IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(arguments, extraData);
+                IDevCommand command = commandFactory.generate(registeredCommand);
+                if (command.performAutoValidation(autoValidationConfiguration)) {
+                    command.execute();
+                }
+                return true;
+            } else if (arguments.length < aliasLength) {
                 continue;
             }
 
