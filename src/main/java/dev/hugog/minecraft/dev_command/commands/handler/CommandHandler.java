@@ -10,14 +10,14 @@ import dev.hugog.minecraft.dev_command.factories.CommandFactory;
 import dev.hugog.minecraft.dev_command.factories.IObjectFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
+import dev.hugog.minecraft.dev_command.utils.Tree;
 import dev.hugog.minecraft.dev_command.validation.DefaultAutoValidationConfiguration;
 import dev.hugog.minecraft.dev_command.validation.IAutoValidationConfiguration;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Log4j2
 public class CommandHandler {
@@ -83,40 +83,17 @@ public class CommandHandler {
     }
 
     public List<String> executeTabComplete(Integration integration, CommandSender commandSender, String[] arguments) {
-        List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
+        Tree<String> commandTree = commandRegistry.getCommandTree(integration);
+        Tree.Node<String> lastArgumentNode = commandTree.findPath(Arrays.asList(arguments).subList(0, arguments.length - 1));
 
-        if (registeredCommandsForIntegration == null) {
-            return null;
+        if (lastArgumentNode.isLeaf()) { // The tab completion should be handled by the user-defined command
+            String[] commandArguments = Arrays.copyOfRange(arguments, lastArgumentNode.getDepth(), arguments.length);
+            IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArguments, commandSender);
+            IDevCommand command = commandFactory.generate((AbstractCommandData) lastArgumentNode.getExtraData());
+            return command.onTabComplete(commandArguments);
+        } else { // The tab completion should be handled by the DevCommand using info. about the command tree
+            return lastArgumentNode.getChildren().stream().map(Tree.Node::getData).toList();
         }
-
-        for (AbstractCommandData registeredCommand : registeredCommandsForIntegration) {
-
-            String[] alias = registeredCommand.getAlias().split(" ");
-            int aliasLength = alias.length;
-
-            if (arguments.length < aliasLength) {
-                continue;
-            }
-
-            boolean isAlias = true;
-            for (int argumentIdx = 0; argumentIdx < aliasLength; argumentIdx++) {
-                if (!arguments[argumentIdx].equalsIgnoreCase(alias[argumentIdx])) {
-                    isAlias = false;
-                    break;
-                }
-            }
-
-            if (isAlias) {
-                String[] commandArguments = Arrays.copyOfRange(arguments, aliasLength, arguments.length);
-                IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArguments, commandSender);
-                IDevCommand command = commandFactory.generate(registeredCommand);
-                return command.onTabComplete(commandArguments);
-            }
-
-        }
-
-        return null;
-
     }
 
     public void initCommandsAutoConfiguration(@NonNull Integration integration) {
