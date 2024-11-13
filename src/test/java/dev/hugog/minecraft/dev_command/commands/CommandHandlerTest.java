@@ -1,8 +1,10 @@
 package dev.hugog.minecraft.dev_command.commands;
 
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.builder.BukkitCommandDataBuilder;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.utils.Tree;
 import dev.hugog.minecraft.dev_command.utils.test_classes.valid.TestCommand;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
 import dev.hugog.minecraft.dev_command.discovery.CommandDiscoveryService;
@@ -10,7 +12,7 @@ import dev.hugog.minecraft.dev_command.exceptions.AutoConfigurationException;
 import dev.hugog.minecraft.dev_command.exceptions.InvalidIntegrationException;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import dev.hugog.minecraft.dev_command.registry.commands.CommandRegistry;
-import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
+import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +45,7 @@ class CommandHandlerTest {
         bukkitCommandStub = new BukkitCommandDataBuilder("test", integrationMock, TestCommand.class)
                 .withDescription("Bukkit Test Command!")
                 .withPermission("command.bukkit_test")
-                .withMandatoryArguments(IntegerArgument.class)
+                .withArguments(new CommandArgument("string", "String to test", 0, IntegerArgumentParser.class, false))
                 .build();
 
     }
@@ -64,45 +66,18 @@ class CommandHandlerTest {
     }
 
     @Test
-    @DisplayName("Test if command is executed when there are no commands registered.")
-    void executeCommandByAlias_NoCommandsRegistered() {
-
-        when(commandRegistryMock.getValues(integrationMock)).thenReturn(null);
-
-        boolean commandExecuted = commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, null);
-
-        assertFalse(commandExecuted);
-
-        verify(commandRegistryMock, times(1)).getValues(integrationMock);
-
-    }
-
-    @Test
-    @DisplayName("Test if the command is executed when it is not registered.")
-    void executeCommandByAlias_CommandNotRegistered() {
-
-        AbstractCommandData abstractCommandDataMock = mock(AbstractCommandData.class);
-
-        when(commandRegistryMock.getValues(integrationMock)).thenReturn(List.of(abstractCommandDataMock));
-        when(abstractCommandDataMock.getAlias()).thenReturn("not_registered_alias");
-
-        assertFalse(commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, null));
-
-        verify(commandRegistryMock, times(1)).getValues(integrationMock);
-
-    }
-
-    @Test
     @DisplayName("Test if command is executed successfully by its alias.")
     void executeCommandByAlias() {
 
+        Tree<String> commandTree = new Tree<>("");
+        commandTree.getRoot().setExtraData(bukkitCommandStub);
         commandHandler.registerCommand(integrationMock, bukkitCommandStub);
 
-        when(commandRegistryMock.getValues(integrationMock)).thenReturn(List.of(bukkitCommandStub));
+        when(commandRegistryMock.getCommandTree(integrationMock)).thenReturn(commandTree);
 
-        assertTrue(commandHandler.executeCommandByAlias(integrationMock, bukkitCommandStub.getAlias(), null, new String[] {"good", "afternoon" } ));
+        assertTrue(commandHandler.executeCommand(integrationMock, null, new String[]{bukkitCommandStub.getAlias()}));
 
-        verify(commandRegistryMock, times(1)).getValues(integrationMock);
+        verify(commandRegistryMock, times(1)).getCommandTree(integrationMock);
 
     }
 

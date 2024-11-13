@@ -9,10 +9,12 @@ import java.lang.reflect.Constructor;
 
 public class CommandFactory implements IObjectFactory<IDevCommand, AbstractCommandData> {
 
-    private final Object[] executorArgs;
+    private final CommandSender commandSender;
+    private final String[] args;
 
-    public CommandFactory(Object... executorArgs) {
-        this.executorArgs = executorArgs;
+    public CommandFactory(CommandSender commandSender, String[] args) {
+        this.commandSender = commandSender;
+        this.args = args;
     }
 
     @Override
@@ -23,32 +25,13 @@ public class CommandFactory implements IObjectFactory<IDevCommand, AbstractComma
         IDevCommand executorInstance;
 
         try {
-
             Constructor<? extends IDevCommand> executorConstructor;
-
             if (abstractCommandData instanceof BukkitCommandData) {
                 executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
-
-                if (executorArgs.length == 0) {
-                    throw new IllegalArgumentException("You must provide a CommandSender and a String[] as arguments for the BukkitCommandData executor.");
-                }
-
-                if (executorArgs[0] != null && !(executorArgs[0] instanceof CommandSender)) {
-                    throw new IllegalArgumentException("The first argument for the BukkitCommandData executor must be a CommandSender.");
-                }
-
-                String[] remainingArgs = new String[0];
-
-                if (executorArgs.length > 1) {
-                    remainingArgs = (String[]) executorArgs[1];
-                }
-
-                executorInstance = executorConstructor.newInstance(abstractCommandData, executorArgs[0], remainingArgs);
-
+                executorInstance = executorConstructor.newInstance(abstractCommandData, commandSender, args);
             } else {
                 executorInstance = null;
             }
-
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
             return null;

@@ -4,6 +4,8 @@ import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class NoAnnotationTestCommand extends BukkitDevCommand {
 
     public static boolean called;
@@ -20,6 +22,11 @@ public class NoAnnotationTestCommand extends BukkitDevCommand {
         called = true;
         hasPermission = hasPermissionToExecuteCommand();
         hasValidArgs = hasValidArgs();
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] args) {
+        return List.of();
     }
 
 }

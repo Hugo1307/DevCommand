@@ -1,14 +1,21 @@
 package dev.hugog.minecraft.dev_command.utils.test_classes.invalid;
 
+import dev.hugog.minecraft.dev_command.annotations.Argument;
+import dev.hugog.minecraft.dev_command.annotations.Arguments;
+import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
-import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
+import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 @Command(alias = "test", description = "Bukkit Test Command!", permission = "command.bukkit_test")
-@ArgsValidation(mandatoryArgs = {IntegerArgument.class})
+@Arguments(value = {
+    @Argument(name = "string", description = "String to test", position = 0, parser = StringArgumentParser.class),
+    @Argument(name = "number", description = "Number to test", position = 1, parser = IntegerArgumentParser.class, optional = true)
+})
 public class TestCommandCopy extends BukkitDevCommand {
 
     public static boolean called;
@@ -27,6 +34,11 @@ public class TestCommandCopy extends BukkitDevCommand {
         command = this.getCommandData();
         sender = getCommandSender();
         args = getArgs();
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] args) {
+        return List.of();
     }
 
 }

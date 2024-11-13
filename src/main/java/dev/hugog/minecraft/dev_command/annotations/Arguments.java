@@ -5,11 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Command {
-    String alias();
-    String description() default "";
-    String permission() default "";
-    boolean isPlayerOnly() default false;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Arguments {
+    Argument[] value();
 }

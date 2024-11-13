@@ -1,9 +1,10 @@
 package dev.hugog.minecraft.dev_command.commands.builder;
 
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import dev.hugog.minecraft.dev_command.commands.IDevCommand;
 import dev.hugog.minecraft.dev_command.integration.Integration;
-import dev.hugog.minecraft.dev_command.validators.CommandArgument;
+import dev.hugog.minecraft.dev_command.validation.AutoValidationData;
 
 public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDataBuilder, BukkitCommandData> {
 
@@ -15,8 +16,8 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
     private Class<?>[] dependencies;
     private String permission;
     private boolean isPlayerOnly;
-    private Class<? extends CommandArgument<?>>[] mandatoryArguments;
-    private Class<? extends CommandArgument<?>>[] optionalArguments;
+    private CommandArgument[] arguments;
+    private AutoValidationData autoValidationData;
 
     public BukkitCommandDataBuilder(String alias, Integration integration, Class<? extends IDevCommand> executor) {
         this.alias = alias;
@@ -53,15 +54,8 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
         return this;
     }
 
-    @SafeVarargs
-    public final BukkitCommandDataBuilder withMandatoryArguments(Class<? extends CommandArgument<?>>... argumentTypes) {
-        this.mandatoryArguments = argumentTypes;
-        return this;
-    }
-
-    @SafeVarargs
-    public final BukkitCommandDataBuilder withOptionalArguments(Class<? extends CommandArgument<?>>... argumentTypes) {
-        this.optionalArguments = argumentTypes;
+    public BukkitCommandDataBuilder withArguments(CommandArgument... arguments) {
+        this.arguments = arguments;
         return this;
     }
 
@@ -80,8 +74,14 @@ public class BukkitCommandDataBuilder implements ICommandBuilder<BukkitCommandDa
         return this;
     }
 
+    public final BukkitCommandDataBuilder withAutoValidation(AutoValidationData autoValidationData) {
+        this.autoValidationData = autoValidationData;
+        return this;
+    }
+
     public BukkitCommandData build() {
-        return new BukkitCommandData(name, alias, description, integration, dependencies, executor, permission, isPlayerOnly, mandatoryArguments, optionalArguments);
+        return new BukkitCommandData(name, alias, description, integration, dependencies, executor, permission,
+                isPlayerOnly, arguments, autoValidationData);
     }
 
 }

@@ -1,13 +1,18 @@
 package dev.hugog.minecraft.dev_command.discovery;
 
-import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
+import dev.hugog.minecraft.dev_command.annotations.Arguments;
+import dev.hugog.minecraft.dev_command.annotations.AutoValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.commands.IDevCommand;
 import dev.hugog.minecraft.dev_command.commands.builder.BukkitCommandDataBuilder;
 import dev.hugog.minecraft.dev_command.commands.data.AbstractCommandData;
+import dev.hugog.minecraft.dev_command.factories.ArgumentFactory;
 import dev.hugog.minecraft.dev_command.integration.Integration;
-import dev.hugog.minecraft.dev_command.validators.CommandArgument;
+import java.util.Arrays;
+
+import dev.hugog.minecraft.dev_command.validation.AutoValidationData;
 import lombok.Getter;
 import org.reflections.Reflections;
 
@@ -48,19 +53,26 @@ public class CommandDiscoveryService {
 
     public AbstractCommandData commandClassToCommandData(Class<? extends IDevCommand> commandExecutorClass) {
 
-        Class<? extends CommandArgument<?>>[] mandatoryArgsValidationTypes = null;
-        Class<? extends CommandArgument<?>>[] optionalArgsValidationTypes = null;
+        CommandArgument[] arguments = null;
         Class<?>[] commandDependencies = null;
+        AutoValidationData autoValidationData = null;
 
-        if (containsArgsValidator(commandExecutorClass)) {
-            ArgsValidation executorArgsValidationAnnotation = getArgsValidationAnnotation(commandExecutorClass);
-            mandatoryArgsValidationTypes = executorArgsValidationAnnotation.mandatoryArgs();
-            optionalArgsValidationTypes = executorArgsValidationAnnotation.optionalArgs();
+        if (containsArguments(commandExecutorClass)) {
+            ArgumentFactory argumentFactory = new ArgumentFactory();
+            Arguments executorArgumentsAnnotation = getArgumentsAnnotation(commandExecutorClass);
+            arguments = Arrays.stream(executorArgumentsAnnotation.value())
+                    .map(argumentFactory::generate)
+                    .toArray(CommandArgument[]::new);
         }
 
         if (containsDependenciesAnnotation(commandExecutorClass)) {
             Dependencies dependenciesAnnotation = getDependenciesAnnotation(commandExecutorClass);
             commandDependencies = dependenciesAnnotation.dependencies();
+        }
+
+        if (containsAutoValidationAnnotation(commandExecutorClass)) {
+            AutoValidation autoValidationAnnotation = getAutoValidationAnnotation(commandExecutorClass);
+            autoValidationData = new AutoValidationData(autoValidationAnnotation.permission(), autoValidationAnnotation.arguments(), autoValidationAnnotation.sender());
         }
 
         Command executorCommandAnnotation = getCommandAnnotation(commandExecutorClass);
@@ -74,9 +86,9 @@ public class CommandDiscoveryService {
                 .withDescription(commandDescription)
                 .withPermission(commandPermission)
                 .withPlayerOnly(isPlayerOnly)
-                .withMandatoryArguments(mandatoryArgsValidationTypes)
-                .withOptionalArguments(optionalArgsValidationTypes)
+                .withArguments(arguments)
                 .withDependencies(commandDependencies)
+                .withAutoValidation(autoValidationData)
                 .build();
 
     }
@@ -96,24 +108,32 @@ public class CommandDiscoveryService {
         return classToGetAnnotationFrom.getAnnotation(Command.class);
     }
 
-    private ArgsValidation getArgsValidationAnnotation(Class<?> classToGetAnnotationFrom) {
-        return classToGetAnnotationFrom.getAnnotation(ArgsValidation.class);
+    private Arguments getArgumentsAnnotation(Class<?> classToGetAnnotationFrom) {
+        return classToGetAnnotationFrom.getAnnotation(Arguments.class);
     }
 
     private Dependencies getDependenciesAnnotation(Class<?> classToGetAnnotationFrom) {
         return classToGetAnnotationFrom.getAnnotation(Dependencies.class);
     }
 
+    private dev.hugog.minecraft.dev_command.annotations.AutoValidation getAutoValidationAnnotation(Class<?> classToGetAnnotationFrom) {
+        return classToGetAnnotationFrom.getAnnotation(dev.hugog.minecraft.dev_command.annotations.AutoValidation.class);
+    }
+
     private boolean containsCommandAnnotation(Class<?> classToCheck) {
         return classToCheck.isAnnotationPresent(Command.class);
     }
 
-    private boolean containsArgsValidator(Class<?> classToCheck) {
-        return classToCheck.isAnnotationPresent(ArgsValidation.class);
+    private boolean containsArguments(Class<?> classToCheck) {
+        return classToCheck.isAnnotationPresent(Arguments.class);
     }
 
     private boolean containsDependenciesAnnotation(Class<?> classToCheck) {
         return classToCheck.isAnnotationPresent(Dependencies.class);
+    }
+
+    private boolean containsAutoValidationAnnotation(Class<?> classToCheck) {
+        return classToCheck.isAnnotationPresent(dev.hugog.minecraft.dev_command.annotations.AutoValidation.class);
     }
 
     @SuppressWarnings("unchecked")
