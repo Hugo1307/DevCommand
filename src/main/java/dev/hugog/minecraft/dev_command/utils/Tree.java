@@ -41,7 +41,7 @@ public class Tree<T> {
     public Node<T> findPath(List<T> sequence) {
         Node<T> lastNode = root;
         for (T data : sequence) {
-            Node<T> node = findNodeInChild(lastNode, data);
+            Node<T> node = findNode(lastNode, data);
             if (node == null) {
                 return lastNode;
             }
@@ -59,13 +59,13 @@ public class Tree<T> {
      * @param data the data to find
      * @return the node that contains the data, or null if the data is not found
      */
-    private Node<T> findNodeInChild(Node<T> node, T data) {
+    public Node<T> findNode(Node<T> node, T data) {
         if (node.getData().equals(data)) {
             return node;
         }
 
         for (Node<T> child : node.getChildren()) {
-            Node<T> found = findNodeInChild(child, data);
+            Node<T> found = findNode(child, data);
             if (found != null) {
                 return found;
             }
@@ -117,5 +117,13 @@ public class Tree<T> {
             return parent.getDepth() + 1;
         }
 
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "data=" + data +
+                    ", parent=" + parent +
+                    ", extraData=" + extraData +
+                    '}';
+        }
     }
 }

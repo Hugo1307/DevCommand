@@ -29,7 +29,7 @@ public final class DevCommandExecutor implements CommandExecutor, TabCompleter {
         if (!command.getLabel().equalsIgnoreCase(commandLabel) && !isAnAlias) { // Not our command!
             return false;
         }
-        return devCommand.getCommandHandler().executeCommand(integration, args, commandSender);
+        return devCommand.getCommandHandler().executeCommand(integration, commandSender, args);
     }
 
     @Override

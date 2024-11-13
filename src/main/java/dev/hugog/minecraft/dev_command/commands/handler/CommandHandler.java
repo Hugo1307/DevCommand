@@ -35,51 +35,33 @@ public class CommandHandler {
         commandRegistry.add(integration, command);
     }
 
-    public boolean executeCommand(Integration integration, String[] arguments, Object... extraData) {
+    public boolean executeCommand(Integration integration, CommandSender commandSender, String[] arguments) {
+        Tree<String> commandTree = commandRegistry.getCommandTree(integration);
+        Tree.Node<String> lastArgumentNode = commandTree.findPath(Arrays.asList(arguments).subList(0, arguments.length));
+        String[] commandArguments;
 
-        List<AbstractCommandData> registeredCommandsForIntegration = commandRegistry.getValues(integration);
+        // Take into account the case where the command is empty -> root command with no arguments
+        if (arguments.length == 0) {
+            Tree.Node<String> emptyNode = commandTree.findNode(commandTree.getRoot(), "");
+            if (emptyNode != null) {
+                lastArgumentNode = emptyNode;
+            }
+            commandArguments = arguments;
+        } else {
+            commandArguments = Arrays.copyOfRange(arguments, lastArgumentNode.getDepth(), arguments.length);
+        }
 
-        if (registeredCommandsForIntegration == null) {
+        if (!lastArgumentNode.isLeaf()) {
+            log.warn("The command '{}' from '{}' was not found in the command tree.", String.join(" ", arguments), integration.getName());
             return false;
         }
 
-        for (AbstractCommandData registeredCommand : registeredCommandsForIntegration) {
-
-            String[] alias = registeredCommand.getAlias().split(" ");
-            int aliasLength = alias.length;
-
-            if (arguments.length == 0 && registeredCommand.getAlias().isEmpty()) {
-                IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(arguments, extraData);
-                IDevCommand command = commandFactory.generate(registeredCommand);
-                if (command.performAutoValidation(autoValidationConfiguration)) {
-                    command.execute();
-                }
-                return true;
-            } else if (arguments.length < aliasLength) {
-                continue;
-            }
-
-            boolean isAlias = true;
-            for (int argumentIdx = 0; argumentIdx < aliasLength; argumentIdx++) {
-                if (!arguments[argumentIdx].equalsIgnoreCase(alias[argumentIdx])) {
-                    isAlias = false;
-                    break;
-                }
-            }
-
-            if (isAlias) {
-                IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(Arrays.copyOfRange(arguments, aliasLength, arguments.length), extraData);
-                IDevCommand command = commandFactory.generate(registeredCommand);
-                if (command.performAutoValidation(autoValidationConfiguration)) {
-                    command.execute();
-                }
-                return true;
-            }
-
+        IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandSender, commandArguments);
+        IDevCommand command = commandFactory.generate((AbstractCommandData) lastArgumentNode.getExtraData());
+        if (command.performAutoValidation(autoValidationConfiguration)) {
+            command.execute();
         }
-
-        return false;
-
+        return true;
     }
 
     public List<String> executeTabComplete(Integration integration, CommandSender commandSender, String[] arguments) {
@@ -88,7 +70,7 @@ public class CommandHandler {
 
         if (lastArgumentNode.isLeaf()) { // The tab completion should be handled by the user-defined command
             String[] commandArguments = Arrays.copyOfRange(arguments, lastArgumentNode.getDepth(), arguments.length);
-            IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandArguments, commandSender);
+            IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandSender, commandArguments);
             IDevCommand command = commandFactory.generate((AbstractCommandData) lastArgumentNode.getExtraData());
             return command.onTabComplete(commandArguments);
         } else { // The tab completion should be handled by the DevCommand using info. about the command tree

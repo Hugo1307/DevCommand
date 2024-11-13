@@ -46,7 +46,7 @@ class IntegrationTestIT {
                 .build();
 
         commandHandler.registerCommand(pluginIntegration, bukkitCommand);
-        commandHandler.executeCommand(pluginIntegration, new String[]{"test", "1"}, (Object) null);
+        commandHandler.executeCommand(pluginIntegration, null, new String[]{"test", "1"});
 
         // The command was successfully called
         assertTrue(TestCommand.called);
@@ -64,7 +64,7 @@ class IntegrationTestIT {
     void autoCommandDiscoveryAndExecuteBukkitCommand() {
 
         commandHandler.initCommandsAutoConfiguration(pluginIntegration);
-        commandHandler.executeCommand(pluginIntegration, new String[]{"test", "good", "afternoon"}, (Object) null);
+        commandHandler.executeCommand(pluginIntegration, null, new String[]{"test", "good", "afternoon"});
 
         // The command was successfully called
         assertTrue(TestCommand.called);
@@ -83,7 +83,7 @@ class IntegrationTestIT {
     @Test
     void autoDiscovery_And_ExecuteBukkitCommandWithEmptyAlias() {
         commandHandler.initCommandsAutoConfiguration(pluginIntegration);
-        commandHandler.executeCommand(pluginIntegration, new String[]{"", "good", "afternoon"}, (Object) null);
+        commandHandler.executeCommand(pluginIntegration, null, new String[]{"", "good", "afternoon"});
 
         assertTrue(EmptyAliasCommand.called);
         assertNull(EmptyAliasCommand.sender);
@@ -98,7 +98,7 @@ class IntegrationTestIT {
     @Test
     void autoDiscovery_And_ExecuteBukkitCommandWithMultipleAlias() {
         commandHandler.initCommandsAutoConfiguration(pluginIntegration);
-        commandHandler.executeCommand(pluginIntegration, new String[]{"multiple", "aliases", "good", "afternoon"}, (Object) null);
+        commandHandler.executeCommand(pluginIntegration, null, new String[]{"multiple", "aliases", "good", "afternoon"});
 
         assertTrue(CompoundedAliasCommand.called);
         assertNull(CompoundedAliasCommand.sender);

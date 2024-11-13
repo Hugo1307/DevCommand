@@ -9,12 +9,12 @@ import java.lang.reflect.Constructor;
 
 public class CommandFactory implements IObjectFactory<IDevCommand, AbstractCommandData> {
 
+    private final CommandSender commandSender;
     private final String[] args;
-    private final Object[] extraData;
 
-    public CommandFactory(String[] args, Object... extraData) {
+    public CommandFactory(CommandSender commandSender, String[] args) {
+        this.commandSender = commandSender;
         this.args = args;
-        this.extraData = extraData;
     }
 
     @Override
@@ -25,27 +25,13 @@ public class CommandFactory implements IObjectFactory<IDevCommand, AbstractComma
         IDevCommand executorInstance;
 
         try {
-
             Constructor<? extends IDevCommand> executorConstructor;
-
             if (abstractCommandData instanceof BukkitCommandData) {
                 executorConstructor = executor.getConstructor(BukkitCommandData.class, CommandSender.class, String[].class);
-
-                if (extraData.length == 0) {
-                    throw new IllegalArgumentException("You must provide at least a CommandSender as arguments for the BukkitCommandData executor.");
-                }
-
-                if (extraData[0] != null && !(extraData[0] instanceof CommandSender)) {
-                    throw new IllegalArgumentException("The first argument for the BukkitCommandData executor must be a CommandSender.");
-                }
-
-                CommandSender commandSender = (CommandSender) extraData[0];
                 executorInstance = executorConstructor.newInstance(abstractCommandData, commandSender, args);
-
             } else {
                 executorInstance = null;
             }
-
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
             return null;
