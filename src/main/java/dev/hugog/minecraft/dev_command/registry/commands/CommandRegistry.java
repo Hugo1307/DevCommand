@@ -77,9 +77,6 @@ public class CommandRegistry implements IRegistry<Integration, AbstractCommandDa
             String[] alias = registeredCommand.getAlias().split(" ");
             Tree.Node<String> lastNode = null;
 
-            System.out.println(registeredCommand.getAlias());
-            System.out.println("Alias length: " + alias.length);
-
             for (int i = 0; i < alias.length; i++) {
                 // Get an existing node with the prefix of the current alias, if not found, get the root node
                 Tree.Node<String> existingNode = commandTree.findPath(Arrays.asList(alias).subList(0, i));
