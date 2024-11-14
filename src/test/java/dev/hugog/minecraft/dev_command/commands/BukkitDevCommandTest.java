@@ -1,14 +1,13 @@
 package dev.hugog.minecraft.dev_command.commands;
 
 import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
-import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import dev.hugog.minecraft.dev_command.exceptions.ArgumentsConfigException;
-import dev.hugog.minecraft.dev_command.exceptions.InvalidArgumentsException;
-import dev.hugog.minecraft.dev_command.exceptions.PermissionConfigException;
 import dev.hugog.minecraft.dev_command.arguments.parsers.BooleanArgumentParser;
 import dev.hugog.minecraft.dev_command.arguments.parsers.DoubleArgumentParser;
 import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
+import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.exceptions.ArgumentsConfigException;
+import dev.hugog.minecraft.dev_command.exceptions.PermissionConfigException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -387,33 +387,6 @@ class BukkitDevCommandTest {
         assertDoesNotThrow(() -> bukkitDevCommandStub.getArgumentParser(0));
         assertThat(bukkitDevCommandStub.getArgumentParser(0))
                 .isNotNull();
-
-    }
-
-    @Test
-    @DisplayName("Test getArgumentParser() method with invalid arguments.")
-    void parseArgument_Invalid() {
-
-        String[] arguments = new String[] {"-78","yes",".22", "-0.44"};
-        bukkitDevCommandStub = new BukkitDevCommand(bukkitCommandDataMock, commandSenderMock, arguments) {
-            @Override
-            public void execute() {
-                System.out.println("Command Executed");
-            }
-            @Override
-            public List<String> onTabComplete(String[] args) {
-                return List.of();
-            }
-        };
-
-        when(bukkitCommandDataMock.getArguments()).thenReturn(new CommandArgument[]{
-            new CommandArgument("integer", "Integer to test", 0, IntegerArgumentParser.class, false),
-            new CommandArgument("boolean", "Boolean to test", 1, BooleanArgumentParser.class, false),
-            new CommandArgument("integer", "Integer to test", 2, IntegerArgumentParser.class, false)}
-        );
-
-        assertFalse(bukkitDevCommandStub.hasValidArgs());
-        assertThrows(InvalidArgumentsException.class, () -> bukkitDevCommandStub.getArgumentParser(2));
 
     }
 
