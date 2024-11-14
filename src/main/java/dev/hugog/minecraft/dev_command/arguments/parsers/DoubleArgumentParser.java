@@ -3,6 +3,8 @@ package dev.hugog.minecraft.dev_command.arguments.parsers;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Optional;
+
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
 public class DoubleArgumentParser extends CommandArgumentParser<Double> {
@@ -17,8 +19,11 @@ public class DoubleArgumentParser extends CommandArgumentParser<Double> {
     }
 
     @Override
-    public Double parse() {
-        return Double.parseDouble(getArgument());
+    public Optional<Double> parse() {
+        if (!isValid()) {
+            return Optional.empty();
+        }
+        return Optional.of(Double.parseDouble(getArgument()));
     }
 
 }
