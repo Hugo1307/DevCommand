@@ -41,7 +41,7 @@ public class Tree<T> {
     public Node<T> findPath(List<T> sequence) {
         Node<T> lastNode = root;
         for (T data : sequence) {
-            Node<T> node = findNode(lastNode, data);
+            Node<T> node = findDirectChild(lastNode, data);
             if (node == null) {
                 return lastNode;
             }
@@ -51,23 +51,20 @@ public class Tree<T> {
     }
 
     /**
-     * Finds a node in the tree that contains the given data.
+     * Finds a direct child of the given node that contains the given data.
      *
-     * <p>
-     * It uses a depth-first search to find the node that contains the given data.
-     *
+     * @param node the parent node
      * @param data the data to find
-     * @return the node that contains the data, or null if the data is not found
+     * @return the direct child node that contains the data, or null if not found
      */
-    public Node<T> findNode(Node<T> node, T data) {
+    public Node<T> findDirectChild(Node<T> node, T data) {
         if (node.getData().equals(data)) {
             return node;
         }
 
         for (Node<T> child : node.getChildren()) {
-            Node<T> found = findNode(child, data);
-            if (found != null) {
-                return found;
+            if (child.getData().equals(data)) {
+                return child;
             }
         }
         return null;
