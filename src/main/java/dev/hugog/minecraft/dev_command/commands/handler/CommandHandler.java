@@ -42,7 +42,7 @@ public class CommandHandler {
 
         // Take into account the case where the command is empty -> root command with no arguments
         if (arguments.length == 0) {
-            Tree.Node<String> emptyNode = commandTree.findNode(commandTree.getRoot(), "");
+            Tree.Node<String> emptyNode = commandTree.findDirectChild(commandTree.getRoot(), "");
             if (emptyNode != null) {
                 lastArgumentNode = emptyNode;
             }
@@ -52,7 +52,7 @@ public class CommandHandler {
         }
 
         if (!lastArgumentNode.isLeaf()) {
-            log.warn("The command '{}' from '{}' was not found in the command tree.", String.join(" ", arguments), integration.getName());
+            log.info("The command '{}' from '{}' was not found in the command tree.", String.join(" ", arguments), integration.getName());
             return false;
         }
 

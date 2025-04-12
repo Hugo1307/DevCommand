@@ -90,25 +90,15 @@ public abstract class BukkitDevCommand implements IDevCommand {
 
     @Override
     public ICommandArgumentParser<?> getArgumentParser(int argumentPosition) {
-        if (!hasValidArgs()) {
-            throw new InvalidArgumentsException(String.format("The arguments provided for the command %s are invalid.", commandData.getName()));
-        }
-
         if (args.length <= argumentPosition) {
             throw new InvalidArgumentsException(String.format("The argument position %d is out of bounds for the command %s.", argumentPosition, commandData.getName()));
         }
 
-        ICommandArgumentParser<?> parser = Arrays.stream(commandData.getArguments())
+        return Arrays.stream(commandData.getArguments())
                 .filter(commandArgument -> commandArgument.position() == argumentPosition)
                 .findFirst()
                 .map(commandArgument -> new ArgumentParserFactory(args[argumentPosition]).generate(commandArgument.validator()))
                 .orElseThrow();
-
-        if (!parser.isValid()) {
-            throw new InvalidArgumentsException(String.format("The argument at position %d is invalid for the command %s.", argumentPosition, commandData.getName()));
-        }
-
-        return parser;
     }
 
     @Override
