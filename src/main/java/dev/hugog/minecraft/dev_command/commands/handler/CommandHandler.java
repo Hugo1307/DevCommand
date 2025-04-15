@@ -18,6 +18,7 @@ import lombok.extern.log4j.Log4j2;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class CommandHandler {
@@ -74,7 +75,8 @@ public class CommandHandler {
             IDevCommand command = commandFactory.generate((AbstractCommandData) lastArgumentNode.getExtraData());
             return command.onTabComplete(commandArguments);
         } else { // The tab completion should be handled by the DevCommand using info. about the command tree
-            return lastArgumentNode.getChildren().stream().map(Tree.Node::getData).toList();
+            return lastArgumentNode.getChildren().stream().map(Tree.Node::getData)
+                    .collect(Collectors.toUnmodifiableList());
         }
     }
 
