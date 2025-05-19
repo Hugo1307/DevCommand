@@ -17,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Generated
 @Getter
@@ -26,7 +27,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
     private final CommandSender commandSender;
     private final String[] args;
 
-    public BukkitDevCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+    protected BukkitDevCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
         this.commandData = commandData;
         this.commandSender = commandSender;
         this.args = args;
@@ -99,6 +100,19 @@ public abstract class BukkitDevCommand implements IDevCommand {
                 .findFirst()
                 .map(commandArgument -> new ArgumentParserFactory(args[argumentPosition]).generate(commandArgument.validator()))
                 .orElseThrow();
+    }
+
+    @Override
+    public Optional<ICommandArgumentParser<?>> getOptionalArgumentParser(int argumentPosition) {
+        if (args.length <= argumentPosition) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Arrays.stream(commandData.getArguments())
+                .filter(commandArgument -> commandArgument.position() == argumentPosition)
+                .findFirst()
+                .map(commandArgument -> new ArgumentParserFactory(args[argumentPosition]).generate(commandArgument.validator()))
+                .orElseThrow());
     }
 
     @Override
