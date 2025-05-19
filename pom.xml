@@ -142,11 +142,10 @@
 
     <distributionManagement>
         <repository>
-            <id>dev-command-depository</id>
+            <id>dev-command-repository</id>
             <name>GitHub Packages DevCommand Repository</name>
             <url>https://maven.pkg.github.com/Hugo1307/DevCommand</url>
         </repository>
     </distributionManagement>
-
 
 </project>
