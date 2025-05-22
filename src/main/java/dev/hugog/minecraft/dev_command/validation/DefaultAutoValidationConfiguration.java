@@ -10,7 +10,7 @@ public class DefaultAutoValidationConfiguration implements IAutoValidationConfig
 
     @Override
     public String getInvalidArgumentsMessage(BukkitDevCommand command) {
-        return "You have provided invalid arguments. Please try again.";
+        return "You have provided invalid arguments. The argument {0} on position {1} is invalid.";
     }
 
     @Override
