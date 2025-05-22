@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.dev_command.commands;
 
+import dev.hugog.minecraft.dev_command.arguments.CommandArgument;
 import dev.hugog.minecraft.dev_command.arguments.parsers.ICommandArgumentParser;
 import dev.hugog.minecraft.dev_command.validation.IAutoValidationConfiguration;
 
@@ -29,14 +30,49 @@ public interface IDevCommand {
      */
     Optional<ICommandArgumentParser<?>> getOptionalArgumentParser(int argumentPosition);
 
+    /**
+     * Check if the player has permission to execute the command.
+     *
+     * @return true if the player has permission, false otherwise
+     */
     boolean hasPermissionToExecuteCommand();
 
+    /**
+     * Check if all arguments provided are valid.
+     *
+     * @return true if all arguments are valid, false otherwise
+     */
     boolean hasValidArgs();
 
+    /**
+     * Check if the command sender can execute the command.
+     *
+     * @return true if the command sender can execute the command, false otherwise
+     */
     boolean canSenderExecuteCommand();
 
+    /**
+     * Perform auto-validation of the command.
+     *
+     * @param configuration the configuration for auto-validation
+     * @return true if the command is valid, false otherwise
+     */
     boolean performAutoValidation(IAutoValidationConfiguration configuration);
 
+    /**
+     * Get a dependency injected into the command.
+     *
+     * @param dependencyClass the class of the dependency to get
+     * @param <T> the type of the dependency
+     * @return the dependency instance
+     */
     <T> T getDependency(Class<T> dependencyClass);
+
+    /**
+     * Get all invalid arguments for the command.
+     *
+     * @return an array of invalid arguments, or an empty array if all arguments are valid
+     */
+    CommandArgument[] getInvalidArguments();
 
 }

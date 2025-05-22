@@ -6,7 +6,7 @@
 
     <groupId>dev.hugog.minecraft</groupId>
     <artifactId>dev-command</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
