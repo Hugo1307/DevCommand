@@ -65,6 +65,21 @@ public class CommandHandler {
         return true;
     }
 
+    public boolean executeCommand(Integration integration, CommandSender commandSender, Class<? extends IDevCommand> commandClass, String... arguments) {
+        return commandRegistry.getValues(integration).stream()
+                .filter(commandData -> commandData.getExecutor().equals(commandClass))
+                .findFirst()
+                .map(commandData -> {
+                    IObjectFactory<IDevCommand, AbstractCommandData> commandFactory = new CommandFactory(commandSender, arguments);
+                    IDevCommand command = commandFactory.generate(commandData);
+                    if (command.performAutoValidation(autoValidationConfiguration)) {
+                        command.execute();
+                    }
+                    return true;
+                })
+                .orElse(false);
+    }
+
     public List<String> executeTabComplete(Integration integration, CommandSender commandSender, String[] arguments) {
         Tree<String> commandTree = commandRegistry.getCommandTree(integration);
         Tree.Node<String> lastArgumentNode = commandTree.findPath(Arrays.asList(arguments).subList(0, arguments.length - 1));
