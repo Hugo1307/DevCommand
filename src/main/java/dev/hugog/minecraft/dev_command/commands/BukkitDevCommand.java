@@ -64,7 +64,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
                 .toArray().length;
 
         if (args.length < mandatoryArgumentsCount) {
-           return false;
+            return false;
         }
 
         for (CommandArgument argument : commandData.getArguments()) {
@@ -79,7 +79,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
             // We can safely assume that the argument is present because of the check above
             String argumentAtPosition = args[argumentPosition];
             ICommandArgumentParser<?> expectedCommandArgument = new ArgumentParserFactory(argumentAtPosition)
-                .generate(argument.validator());
+                    .generate(argument.validator());
 
             if (!expectedCommandArgument.isValid()) {
                 return false;
@@ -136,10 +136,14 @@ public abstract class BukkitDevCommand implements IDevCommand {
         }
         if (commandData.getAutoValidationData().validateArguments() && commandData.getArguments() != null) {
             if (!hasValidArgs()) {
-                CommandArgument firstInvalidArgument = Arrays.stream(getInvalidArguments()).findFirst()
-                        .orElseThrow(() -> new InvalidArgumentsException("Unable to find the first invalid argument. This should never happen."));
-                getCommandSender().sendMessage(MessageFormat.format(configuration.getInvalidArgumentsMessage(this),
-                        firstInvalidArgument.name(), String.valueOf(firstInvalidArgument.position() + 1)));
+                if (getInvalidArguments().length == 0) { // No invalid arguments but invalid = not enough arguments
+                    getCommandSender().sendMessage(MessageFormat.format(configuration.getInvalidArgumentsMessage(this), "Missing Arguments", "N/A"));
+                } else { // Invalid arguments found
+                    CommandArgument firstInvalidArgument = Arrays.stream(getInvalidArguments()).findFirst()
+                            .orElseThrow(() -> new InvalidArgumentsException("No invalid arguments found, but hasValidArgs returned false. This should not happen."));
+                    getCommandSender().sendMessage(MessageFormat.format(configuration.getInvalidArgumentsMessage(this),
+                            firstInvalidArgument.name(), String.valueOf(firstInvalidArgument.position() + 1)));
+                }
                 return false;
             }
         }
@@ -160,7 +164,9 @@ public abstract class BukkitDevCommand implements IDevCommand {
     @Override
     public CommandArgument[] getInvalidArguments() {
         return Arrays.stream(commandData.getArguments())
-                .filter(commandArgument -> !getArgumentParser(commandArgument.position()).isValid())
+                .filter(commandArgument -> !getOptionalArgumentParser(commandArgument.position())
+                        .map(ICommandArgumentParser::isValid)
+                        .orElse(true))
                 .toArray(CommandArgument[]::new);
     }
 
