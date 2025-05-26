@@ -136,7 +136,7 @@ public abstract class BukkitDevCommand implements IDevCommand {
         }
         if (commandData.getAutoValidationData().validateArguments() && commandData.getArguments() != null) {
             if (!hasValidArgs()) {
-                if (getInvalidArguments().length == 0) { // No invalid arguments but invalid = not enough arguments
+                if (getInvalidArguments().length == 0) { // No invalid arguments but still invalid, this means not enough arguments were provided
                     getCommandSender().sendMessage(MessageFormat.format(configuration.getInvalidArgumentsMessage(this), "Missing Arguments", "N/A"));
                 } else { // Invalid arguments found
                     CommandArgument firstInvalidArgument = Arrays.stream(getInvalidArguments()).findFirst()
